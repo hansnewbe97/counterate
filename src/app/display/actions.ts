@@ -33,7 +33,9 @@ export async function getDisplayData() {
         });
 
         // Determine the source of truth (Admin)
-        const admin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN'
+        // Determine the source of truth (Admin) - Robust Logic
+        const isPairedUserAdmin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN';
+        const admin = isPairedUserAdmin
             ? user.pairedUser
             : user?.pairedWith;
 
@@ -64,7 +66,9 @@ export async function checkPendingCommand(displayId: string) {
             }
         });
 
-        const admin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN'
+        // Determine Admin - Robust Logic
+        const isPairedUserAdmin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN';
+        const admin = isPairedUserAdmin
             ? user.pairedUser
             : user?.pairedWith;
 
