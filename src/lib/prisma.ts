@@ -4,12 +4,12 @@ import { PrismaClient } from "@prisma/client";
 if (!process.env.DATABASE_URL) {
     console.error("❌ DATABASE_URL environment variable is not set!");
     console.error("Please set DATABASE_URL in Vercel Environment Variables.");
-    console.error("Example: mysql://user:password@host:port/database?connection_limit=5");
+    console.error("For Neon: postgres://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require");
 
     // In development, provide helpful message
     if (process.env.NODE_ENV === "development") {
         console.error("\n💡 For local development, add to .env file:");
-        console.error('DATABASE_URL="mysql://root:password@localhost:3306/counterate"');
+        console.error('DATABASE_URL="your-neon-connection-string"');
     }
 }
 
