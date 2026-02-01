@@ -115,7 +115,7 @@ export default async function SuperAdminDashboard() {
                         {recentActivity.length === 0 ? (
                             <p className="text-slate-500 text-sm">No recent activity detected.</p>
                         ) : (
-                            recentActivity.map((log) => (
+                            recentActivity.map((log: any) => (
                                 <div key={log.id} className="flex items-start gap-3 p-3 rounded-lg bg-[#111]/50 border border-[#222]">
                                     <div className={cn(
                                         "w-2 h-2 rounded-full mt-1.5",
