@@ -55,7 +55,7 @@ export function Sidebar({ role: initialRole }: { role?: string }) {
             )}
 
             <aside className={cn(
-                "bg-[#050505] border-r border-[#222] flex flex-col h-screen transition-all duration-300 ease-in-out z-50",
+                "bg-[#050505] border-r border-[#222] flex flex-col h-[100dvh] transition-all duration-300 ease-in-out z-50",
                 "fixed md:relative inset-y-0 left-0 w-64",
                 isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
             )}>
