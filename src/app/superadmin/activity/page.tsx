@@ -47,7 +47,7 @@ export default async function ActivityLogPage() {
                                     </td>
                                 </tr>
                             ) : (
-                                logs.map((log) => (
+                                logs.map((log: any) => (
                                     // Use log.id + unique key to avoid conflicts
                                     <tr key={log.id} className="group hover:bg-[#D4AF37]/5 transition-colors">
                                         <td className="p-4 pl-6 text-sm text-slate-400 font-mono whitespace-nowrap">
