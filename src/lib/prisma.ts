@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 if (!process.env.DATABASE_URL) {
     console.error("❌ DATABASE_URL environment variable is not set!");
     console.error("Please set DATABASE_URL in Vercel Environment Variables.");
-    console.error("Example: mysql://user:password@host:port/database");
+    console.error("Example: mysql://user:password@host:port/database?connection_limit=5");
 
     // In development, provide helpful message
     if (process.env.NODE_ENV === "development") {
@@ -18,9 +18,15 @@ const prismaClientSingleton = () => {
         return new PrismaClient({
             log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
             errorFormat: "pretty",
+            datasources: {
+                db: {
+                    url: process.env.DATABASE_URL,
+                },
+            },
         });
     } catch (error) {
         console.error("❌ Failed to initialize Prisma Client:", error);
+        console.error("DATABASE_URL:", process.env.DATABASE_URL ? "is set" : "is NOT set");
         throw error;
     }
 };
