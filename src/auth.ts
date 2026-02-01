@@ -6,6 +6,7 @@ import { z } from "zod";
 import { logActivity } from "@/lib/activity-logger";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+    secret: process.env.AUTH_SECRET || "secret", // Fallback ensuring secret is present
     providers: [
         Credentials({
             credentials: {
@@ -20,10 +21,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                 if (parsedCredentials.success) {
                     const { username, password } = parsedCredentials.data;
-                    console.log("Looking up user:", username);
+                    const cleanedUsername = username.trim();
+                    const cleanedPassword = password.trim();
+
+                    console.log("Looking up user:", cleanedUsername);
 
                     const user = await prisma.user.findUnique({
-                        where: { username },
+                        where: { username: cleanedUsername },
                     });
 
                     if (!user) {
@@ -42,7 +46,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     }
 
                     console.log("Comparing passwords...");
-                    const passwordsMatch = await bcrypt.compare(password, user.password);
+                    const passwordsMatch = await bcrypt.compare(cleanedPassword, user.password);
 
                     if (passwordsMatch) {
                         console.log("Login successful for:", username);
