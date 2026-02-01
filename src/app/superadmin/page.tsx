@@ -8,26 +8,45 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 export default async function SuperAdminDashboard() {
-    const session = await auth();
+    let session = null;
+    try {
+        session = await auth();
+    } catch (e) {
+        console.error("Auth failed in superadmin:", e);
+    }
 
-    // Auto-cleanup logs older than 24 hours
-    const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
-    await prisma.activityLog.deleteMany({
-        where: { createdAt: { lt: yesterday } }
-    });
+    // Try to auto-cleanup logs older than 24 hours
+    try {
+        const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+        await prisma.activityLog.deleteMany({
+            where: { createdAt: { lt: yesterday } }
+        });
+    } catch (e) {
+        console.error("Failed to cleanup logs:", e);
+    }
 
-    // Fetch real stats
-    const [totalAdmins, totalDisplays, inactiveUsers, totalLogs, recentActivity] = await Promise.all([
-        prisma.user.count({ where: { role: "ADMIN" } }),
-        prisma.user.count({ where: { role: "DISPLAY" } }),
-        prisma.user.count({ where: { status: "INACTIVE" } }),
-        prisma.activityLog.count(),
-        prisma.activityLog.findMany({
-            take: 2,
-            orderBy: { createdAt: "desc" },
-            include: { user: { select: { username: true, role: true } } }
-        })
-    ]);
+    // Fetch real stats with error handling
+    let totalAdmins = 0;
+    let totalDisplays = 0;
+    let inactiveUsers = 0;
+    let totalLogs = 0;
+    let recentActivity: any[] = [];
+
+    try {
+        [totalAdmins, totalDisplays, inactiveUsers, totalLogs, recentActivity] = await Promise.all([
+            prisma.user.count({ where: { role: "ADMIN" } }),
+            prisma.user.count({ where: { role: "DISPLAY" } }),
+            prisma.user.count({ where: { status: "INACTIVE" } }),
+            prisma.activityLog.count(),
+            prisma.activityLog.findMany({
+                take: 2,
+                orderBy: { createdAt: "desc" },
+                include: { user: { select: { username: true, role: true } } }
+            })
+        ]);
+    } catch (e) {
+        console.error("Failed to fetch stats:", e);
+    }
 
     const systemHealth = inactiveUsers > 0 ? "Warning" : "Optimal";
 
