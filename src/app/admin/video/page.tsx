@@ -96,7 +96,7 @@ export default function VideoPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-8 space-y-8">
-                            {urls.map((url, index) => (
+                            {urls.map((url: string, index: number) => (
                                 <div key={index} className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">
@@ -140,7 +140,7 @@ export default function VideoPage() {
                 <div className="xl:col-span-2 space-y-6">
                     <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest px-1">Live Previews</h3>
                     <div className="grid grid-cols-1 gap-4">
-                        {urls.map((url, index) => (
+                        {urls.map((url: string, index: number) => (
                             <Card key={index} className="bg-[#111] border-[#222] overflow-hidden group hover:border-[#D4AF37]/30 transition-all">
                                 <div className="aspect-video bg-black relative">
                                     {url ? (

@@ -18,12 +18,12 @@ export async function getUsers() {
     });
 
     const configs = await prisma.displayConfig.findMany({
-        where: { adminId: { in: users.map(u => u.id) } }
+        where: { adminId: { in: users.map((u: any) => u.id) } }
     });
 
-    return users.map(user => ({
+    return users.map((user: any) => ({
         ...user,
-        displayConfig: configs.find(c => c.adminId === user.id)
+        displayConfig: configs.find((c: any) => c.adminId === user.id)
     })) as any[];
 }
 

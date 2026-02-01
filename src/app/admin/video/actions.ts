@@ -45,8 +45,8 @@ export async function setVideos(urls: string[]) {
 
     // Create new sources for non-empty URLs
     const sourcesToCreate = urls
-        .filter(url => url.trim() !== "")
-        .map((url, index) => ({
+        .filter((url: string) => url.trim() !== "")
+        .map((url: string, index: number) => ({
             videoDisplayId: display.id,
             url: normalizeVideoUrl(url),
             order: index
