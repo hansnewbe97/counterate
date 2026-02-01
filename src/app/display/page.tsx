@@ -1,5 +1,6 @@
 import { getDisplayData } from "./actions";
 import DisplayBoard from "./display-board";
+import { DisplayClientListener } from "@/components/DisplayClientListener";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
@@ -15,6 +16,7 @@ export default async function DisplayPage() {
 
     return (
         <main className="h-screen w-screen bg-slate-950 overflow-hidden">
+            {session?.user?.id && <DisplayClientListener displayId={session.user.id} />}
             <DisplayBoard initialData={initialData} />
         </main>
     )

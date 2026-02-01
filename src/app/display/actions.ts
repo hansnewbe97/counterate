@@ -1,54 +1,82 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-
 import { auth } from "@/auth";
 
 export async function getDisplayData() {
     const session = await auth();
-    const userId = session?.user?.id;
-    if (!userId) return null;
+    if (!session?.user?.id) return null;
 
-    // Find the pairing: Display user's paired admin
     const user = await prisma.user.findUnique({
-        where: { id: userId },
+        where: { id: session.user.id },
         include: {
-            pairedWith: true, // If we are the "pairedUser" of an Admin
-            pairedUser: true  // If we are the Admin (for testing)
-        }
-    });
-
-    // Determine the admin context
-    // If the user is a DISPLAY, they are 'pairedWith' an ADMIN.
-    // If the user is an ADMIN, they are managing their own data.
-    const adminId = user?.role === "ADMIN" ? user.id : user?.pairedWith?.id;
-
-    if (!adminId) {
-        return { forex: [], deposit: [], video: null, config: null };
-    }
-
-    const forex = await prisma.forexRate.findMany({
-        where: { active: true, adminId },
-        orderBy: { order: 'asc' }
-    });
-
-    const deposit = await prisma.depositRate.findMany({
-        where: { active: true, adminId },
-        orderBy: { tenor: 'asc' }
-    });
-
-    const video = await prisma.videoDisplay.findUnique({
-        where: { adminId },
-        include: {
-            sources: {
-                orderBy: { order: 'asc' }
+            pairedUser: {
+                include: {
+                    displayConfig: true,
+                    forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                    depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                    videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
+                }
+            },
+            pairedWith: {
+                include: {
+                    displayConfig: true,
+                    forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                    depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                    videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
+                }
             }
         }
     });
 
-    const config = await prisma.displayConfig.findUnique({
-        where: { adminId }
-    });
+    // Determine the source of truth (Admin)
+    const admin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN'
+        ? user.pairedUser
+        : user?.pairedWith;
 
-    return { forex, deposit, video, config, userId };
+    if (!admin) return null;
+
+    return {
+        userId: session.user.id, // For socket/polling identification
+        forex: admin.forexRates,
+        deposit: admin.depositRates,
+        video: admin.videoDisplay,
+        config: admin.displayConfig
+    };
+}
+
+export async function checkPendingCommand(displayId: string) {
+    if (!displayId) return null;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: displayId },
+            include: {
+                pairedUser: { include: { displayConfig: true } },
+                pairedWith: { include: { displayConfig: true } }
+            }
+        });
+
+        const admin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN'
+            ? user.pairedUser
+            : user?.pairedWith;
+
+        if (!admin?.displayConfig) return null;
+
+        const config = admin.displayConfig;
+
+        if (config.pendingCommand) {
+            // Clear the command after reading it
+            await prisma.displayConfig.update({
+                where: { id: config.id },
+                data: { pendingCommand: null, lastCommandAt: new Date() }
+            });
+            return config.pendingCommand;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Error checking command:", error);
+        return null;
+    }
 }

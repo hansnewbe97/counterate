@@ -53,6 +53,10 @@ model DisplayConfig {
   rightTitle      String?
   showClock       Boolean  @default(true)
 
+  // Command System (Vercel Compatible)
+  pendingCommand  String?  // e.g. "RELOAD", "LOGOUT"
+  lastCommandAt   DateTime?
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
