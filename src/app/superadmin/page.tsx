@@ -4,6 +4,9 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export default async function SuperAdminDashboard() {
     const session = await auth();
 

@@ -2,6 +2,9 @@
 import { prisma } from "@/lib/prisma";
 import { ShieldCheck, Calendar, MapPin, Search } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export default async function ActivityLogPage() {
 
     // Auto-cleanup happens on Dashboard load, but we can also ensure we just fetch valid data here.

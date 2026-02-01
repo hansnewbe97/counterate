@@ -4,6 +4,9 @@ import { Settings, User, Shield, Lock, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { SettingsForm } from "./settings-form";
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export default async function SettingsPage() {
     const session = await auth();
     const superAdmins = await prisma.user.findMany({
