@@ -4,45 +4,52 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 
 export async function getDisplayData() {
-    const session = await auth();
-    if (!session?.user?.id) return null;
+    try {
+        const session = await auth();
+        // Return null if no session (consistent with previous behavior) - although earlier comments suggested maybe handling public access? 
+        // Logic below implies pairing is needed, so session is critical.
+        if (!session?.user?.id) return null;
 
-    const user = await prisma.user.findUnique({
-        where: { id: session.user.id },
-        include: {
-            pairedUser: {
-                include: {
-                    displayConfig: true,
-                    forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
-                    depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
-                    videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
-                }
-            },
-            pairedWith: {
-                include: {
-                    displayConfig: true,
-                    forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
-                    depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
-                    videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            include: {
+                pairedUser: {
+                    include: {
+                        displayConfig: true,
+                        forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                        depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                        videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
+                    }
+                },
+                pairedWith: {
+                    include: {
+                        displayConfig: true,
+                        forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                        depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                        videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
+                    }
                 }
             }
-        }
-    });
+        });
 
-    // Determine the source of truth (Admin)
-    const admin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN'
-        ? user.pairedUser
-        : user?.pairedWith;
+        // Determine the source of truth (Admin)
+        const admin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN'
+            ? user.pairedUser
+            : user?.pairedWith;
 
-    if (!admin) return null;
+        if (!admin) return null;
 
-    return {
-        userId: session.user.id, // For socket/polling identification
-        forex: admin.forexRates,
-        deposit: admin.depositRates,
-        video: admin.videoDisplay,
-        config: admin.displayConfig
-    };
+        return {
+            userId: session.user.id, // For socket/polling identification
+            forex: admin.forexRates,
+            deposit: admin.depositRates,
+            video: admin.videoDisplay,
+            config: admin.displayConfig
+        };
+    } catch (error) {
+        console.error("Error fetching display data:", error);
+        return null;
+    }
 }
 
 export async function checkPendingCommand(displayId: string) {

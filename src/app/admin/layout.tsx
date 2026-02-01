@@ -6,7 +6,12 @@ export default async function AdminLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const session = await auth();
+    let session = null;
+    try {
+        session = await auth();
+    } catch (e) {
+        console.error("Auth check failed in admin layout:", e);
+    }
 
     return (
         <div className="flex h-screen bg-black font-sans text-gray-100 overflow-hidden">

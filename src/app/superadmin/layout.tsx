@@ -6,7 +6,12 @@ export default async function SuperAdminLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const session = await auth();
+    let session = null;
+    try {
+        session = await auth();
+    } catch (e) {
+        console.error("Auth check failed in superadmin layout:", e);
+    }
 
     return (
         <div className="flex h-screen bg-[#050505] overflow-hidden">

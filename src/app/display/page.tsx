@@ -5,7 +5,14 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
 export default async function DisplayPage() {
-    const session = await auth();
+    let session = null;
+    try {
+        session = await auth();
+    } catch (e) {
+        console.error("Auth check failed:", e);
+        // Continue with null session - actions.ts will handle null session by returning null data
+    }
+
     // if (!session) redirect("/login"); // Enforce login as per Requirements
 
     // However, if it's meant to be a public screen that auto-logins or valid session exists.

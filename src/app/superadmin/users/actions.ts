@@ -7,24 +7,29 @@ import { auth } from "@/auth";
 import { logActivity } from "@/lib/activity-logger";
 
 export async function getUsers() {
-    const users = await prisma.user.findMany({
-        where: {
-            role: "ADMIN"
-        },
-        include: {
-            pairedUser: true,
-        },
-        orderBy: { username: "asc" }
-    });
+    try {
+        const users = await prisma.user.findMany({
+            where: {
+                role: "ADMIN"
+            },
+            include: {
+                pairedUser: true,
+            },
+            orderBy: { username: "asc" }
+        });
 
-    const configs = await prisma.displayConfig.findMany({
-        where: { adminId: { in: users.map((u: any) => u.id) } }
-    });
+        const configs = await prisma.displayConfig.findMany({
+            where: { adminId: { in: users.map((u: any) => u.id) } }
+        });
 
-    return users.map((user: any) => ({
-        ...user,
-        displayConfig: configs.find((c: any) => c.adminId === user.id)
-    })) as any[];
+        return users.map((user: any) => ({
+            ...user,
+            displayConfig: configs.find((c: any) => c.adminId === user.id)
+        })) as any[];
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return [];
+    }
 }
 
 export async function createUser(

@@ -9,6 +9,8 @@ export function DisplayClientListener({ displayId }: { displayId: string }) {
     const [lastCheck, setLastCheck] = useState(Date.now());
 
     useEffect(() => {
+        if (!displayId) return;
+
         const interval = setInterval(async () => {
             try {
                 const command = await checkPendingCommand(displayId);
