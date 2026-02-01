@@ -8,15 +8,19 @@ import { logActivity } from "@/lib/activity-logger";
 
 export async function getUsers() {
     try {
-        const users = await prisma.user.findMany({
-            where: {
-                role: "ADMIN"
-            },
+        // WORKAROUND: Fetch ALL users, then filter manually
+        // This bypasses potential Prisma enum/WHERE clause issues
+        const allUsers = await prisma.user.findMany({
             include: {
                 pairedUser: true,
             },
             orderBy: { username: "asc" }
         });
+
+        // Filter for ADMIN role in JavaScript
+        const users = allUsers.filter((u: any) => u.role === "ADMIN");
+
+        console.log(`[getUsers] Total users: ${allUsers.length}, Admin users: ${users.length}`);
 
         const configs = await prisma.displayConfig.findMany({
             where: { adminId: { in: users.map((u: any) => u.id) } }
