@@ -1,8 +1,10 @@
-import { getDisplayData } from "./actions";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 import DisplayBoard from "./display-board";
 import { DisplayClientListener } from "@/components/DisplayClientListener";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export default async function DisplayPage() {
     let session = null;
@@ -10,16 +12,56 @@ export default async function DisplayPage() {
         session = await auth();
     } catch (e) {
         console.error("Auth check failed:", e);
-        // Continue with null session - actions.ts will handle null session by returning null data
     }
 
-    // if (!session) redirect("/login"); // Enforce login as per Requirements
+    let initialData: any = null;
 
-    // However, if it's meant to be a public screen that auto-logins or valid session exists.
-    // User requirement: "Only can login to display mode".
-    // So session check is needed.
+    if (session?.user?.id) {
+        try {
+            // Optimization: Direct DB Query to ensure data availability on page load
+            // Bypasses any Server Action middleware/context issues
+            const user = await prisma.user.findUnique({
+                where: { id: session.user.id },
+                include: {
+                    pairedUser: {
+                        include: {
+                            displayConfig: true,
+                            forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                            depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                            videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
+                        }
+                    },
+                    pairedWith: {
+                        include: {
+                            displayConfig: true,
+                            forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                            depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                            videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
+                        }
+                    }
+                }
+            });
 
-    const initialData = await getDisplayData();
+            // Logic to determine Admin source
+            const isPairedUserAdmin = user?.pairedUser?.role === 'ADMIN' || user?.pairedUser?.role === 'SUPER_ADMIN';
+            const admin = isPairedUserAdmin ? user?.pairedUser : user?.pairedWith;
+
+            if (admin) {
+                initialData = {
+                    userId: session.user.id,
+                    forex: admin.forexRates || [],
+                    deposit: admin.depositRates || [],
+                    video: admin.videoDisplay || null,
+                    config: admin.displayConfig || null
+                };
+                console.log(`[DisplayPage] Loaded data for user ${session.user.username}`);
+            } else {
+                console.warn(`[DisplayPage] No admin found for user ${session.user.username}`);
+            }
+        } catch (error) {
+            console.error("[DisplayPage] Direct Query Error:", error);
+        }
+    }
 
     return (
         <main className="h-screen w-screen bg-slate-950 overflow-hidden">
