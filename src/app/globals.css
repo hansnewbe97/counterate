@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Luxury Black & Gold Theme */
+    --background: #000000;
+    /* True Black */
+    --foreground: #F5F5F5;
+    /* Off-White for text */
+
+    --card: #0A0A0A;
+    /* Very Dark Grey */
+    --card-foreground: #E0E0E0;
+
+    --popover: #0F0F0F;
+    --popover-foreground: #D4AF37;
+
+    --primary: #D4AF37;
+    /* Metallic Gold */
+    --primary-foreground: #000000;
+
+    --secondary: #1A1A1A;
+    /* Dark Grey for secondary elements */
+    --secondary-foreground: #F2D06B;
+    /* Light Gold */
+
+    --muted: #111111;
+    --muted-foreground: #888888;
+
+    --accent: #D4AF37;
+    /* Gold Accent */
+    --accent-foreground: #000000;
+
+    --destructive: #8B0000;
+    /* Dark Red */
+    --destructive-foreground: #FFFFFF;
+
+    --border: #333333;
+    /* Dark Grey Border */
+    --input: #1A1A1A;
+    --ring: #D4AF37;
+
+    --radius: 0.75rem;
+    /* More professional, less "bubbly" radius */
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Luxury Glassmorphism */
+  .glass {
+    @apply bg-black/80 backdrop-blur-2xl border border-white/5 shadow-2xl;
+  }
+
+  .glass-card {
+    @apply bg-[#0A0A0A]/90 backdrop-blur-xl border border-white/10 rounded-xl;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  .glass-input {
+    @apply bg-[#111111] border-[#333333] text-white placeholder:text-gray-600 focus:border-[#D4AF37] focus:ring-1 transition-all duration-300;
+    --tw-ring-color: rgba(212, 175, 55, 0.5);
+  }
+
+  /* Gold Text Gradient */
+  .text-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#C9A64E] via-[#F2D06B] to-[#C9A64E];
+  }
+
+  .border-gold {
+    @apply border-[#D4AF37];
+  }
+
+  /* Animations */
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% center;
+    }
+
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}
+
+body {
+  @apply bg-black text-gray-100 antialiased selection:bg-[#D4AF37]/30 selection:text-white;
+}

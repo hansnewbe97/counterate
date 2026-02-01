@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Optimized User table with index
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  role      Role     @default(DISPLAY)
+  status    Status   @default(ACTIVE)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  
+  // Pairing Relationship (Admin <-> Display)
+  pairedUserId String? @unique
+  pairedUser   User?   @relation("UserPairing", fields: [pairedUserId], references: [id], onDelete: Cascade)
+  pairedWith   User?   @relation("UserPairing")
+
+  // Relations for cascading deletes
+  displayConfig DisplayConfig?
+  forexRates    ForexRate[]
+  depositRates  DepositRate[]
+  videoDisplay  VideoDisplay?
+  activityLogs  ActivityLog[]
+
+  @@index([username])
+}
+
+// Centralized Configuration for Display Clients
+model DisplayConfig {
+  id              String   @id @default(cuid())
+  adminId         String?  @unique
+  admin           User?    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  
+  refreshInterval Int      @default(60)
+  marqueeText     String?  
+  theme           String   @default("light")
+  
+  // Branding Fields
+  leftLogoUrl     String?
+  leftTitle       String?   @default("Counterate")
+  leftSubtitle    String?   @default("Money Changer")
+  
+  rightLogoUrl    String?
+  rightTitle      String?
+  showClock       Boolean  @default(true)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+
+model ForexRate {
+  id           String   @id @default(cuid())
+  adminId      String?  
+  admin        User?    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  
+  currency     String   
+  currencyName String   @default("") 
+  ttBuy        Float    @default(0)
+  ttSell       Float    @default(0)
+  bankBuy      Float    @default(0)
+  bankSell     Float    @default(0)
+  active       Boolean  @default(true)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([adminId, currency])
+  @@index([adminId, active, order])
+}
+
+model DepositRate {
+  id        String   @id @default(cuid())
+  adminId   String?  
+  admin     User?    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  
+  tenor     Int      
+  rate      Float
+  active    Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([adminId, active, order])
+}
+
+model VideoDisplay {
+  id        String   @id @default(cuid())
+  adminId   String?  @unique
+  admin     User?    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  
+  active    Boolean  @default(true)
+  sources   VideoSource[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VideoSource {
+  id             String       @id @default(cuid())
+  videoDisplayId String
+  videoDisplay   VideoDisplay @relation(fields: [videoDisplayId], references: [id], onDelete: Cascade)
+  url            String
+  order          Int          @default(0)
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String   // e.g., "LOGIN", "LOGOUT", "UPDATE_CONFIG"
+  details   String?  // JSON or string description
+  ipAddress String?
+  location  String?  // City/Country if available
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  DISPLAY
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
