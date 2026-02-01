@@ -1,47 +1,57 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { getUsers } from "@/app/superadmin/users/actions";
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        // Test 1: Raw query - all users
-        const allUsers = await prisma.user.findMany({
-            include: {
-                pairedUser: true,
-                pairedWith: true
-            }
-        });
+        // Test the exact same logic as getUsers() but with detailed logging
+        let step1Result: any = null;
+        let step1Error: any = null;
 
-        // Test 2: Call getUsers() function
-        let getUsersResult: any = null;
-        let getUsersError: any = null;
         try {
-            getUsersResult = await getUsers();
+            step1Result = await prisma.user.findMany({
+                where: {
+                    role: "ADMIN"
+                },
+                include: {
+                    pairedUser: true,
+                },
+                orderBy: { username: "asc" }
+            });
         } catch (e: any) {
-            getUsersError = e.message;
+            step1Error = e.message;
+        }
+
+        let step2Result: any = null;
+        let step2Error: any = null;
+
+        if (step1Result && step1Result.length > 0) {
+            try {
+                step2Result = await prisma.displayConfig.findMany({
+                    where: { adminId: { in: step1Result.map((u: any) => u.id) } }
+                });
+            } catch (e: any) {
+                step2Error = e.message;
+            }
         }
 
         return NextResponse.json({
-            rawQuery: {
-                count: allUsers.length,
-                users: allUsers.map(u => ({
-                    id: u.id,
-                    username: u.username,
-                    role: u.role,
-                    status: u.status,
-                    pairedUserId: u.pairedUser?.id,
-                    pairedWithId: u.pairedWith?.id
-                }))
+            step1_findAdmins: {
+                error: step1Error,
+                count: step1Result?.length || 0,
+                users: step1Result || []
             },
-            getUsersFunction: {
-                error: getUsersError,
-                count: getUsersResult?.length || 0,
-                users: getUsersResult || []
+            step2_findConfigs: {
+                error: step2Error,
+                count: step2Result?.length || 0,
+                configs: step2Result || []
+            },
+            prismaEnumValues: {
+                hint: "Check if Prisma enum matches database values"
             }
         });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: error.message, stack: error.stack }, { status: 500 });
     }
 }
