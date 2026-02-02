@@ -58,11 +58,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         });
 
                         // Handle Geolocation if provided
+                        const creds = credentials as any;
                         let deviceLocation = "";
-                        if (credentials.latitude && credentials.longitude) {
+                        if (creds.latitude && creds.longitude) {
                             try {
-                                const lat = credentials.latitude as string;
-                                const lon = credentials.longitude as string;
+                                const lat = creds.latitude as string;
+                                const lon = creds.longitude as string;
                                 // Use Agent header as required by OSM usage policy
                                 const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`, {
                                     headers: { 'User-Agent': 'CounterateApp/1.0' }
