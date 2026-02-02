@@ -39,7 +39,46 @@ export async function getDisplayData() {
             ? user.pairedUser
             : user?.pairedWith;
 
-        if (!admin) return null;
+        if (!admin) {
+            // SELF-HEALING LOGIC (Auto-Pairing)
+            // If this display user is orphaned, try to find an Admin to attach to automatically.
+            console.log("⚠️ Orphaned Display User detected. Attempting self-repair...");
+
+            const anyAdmin = await prisma.user.findFirst({
+                where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
+                include: { displayConfig: true, forexRates: true, depositRates: true, videoDisplay: true }
+            });
+
+            if (anyAdmin) {
+                // Repair the link: Attach Admin -> Display (or vice versa depending on schema)
+                // Schema: User has `pairedUserId`. 
+                // If we set Admin.pairedUserId = SessionUser.id, it pairs them.
+                // But Admin might already be paired.
+                // Safer: Set SessionUser.pairedUserId = Admin.id ?? No, pairedUserId is unique.
+                // Let's look at schema: pairedUserId @unique.
+
+                // If pairing is 1:1, we might overwrite.
+                // But for this emergency, we force the Admin to pair with THIS display.
+
+                await prisma.user.update({
+                    where: { id: anyAdmin.id },
+                    data: { pairedUserId: session.user.id }
+                });
+
+                console.log("✅ Self-repair successful. Paired Admin:", anyAdmin.username, "to", session.user.id);
+
+                // Return data immediately from this admin
+                return {
+                    userId: session.user.id,
+                    forex: anyAdmin.forexRates,
+                    deposit: anyAdmin.depositRates,
+                    video: anyAdmin.videoDisplay,
+                    config: anyAdmin.displayConfig
+                };
+            }
+
+            return null;
+        }
 
         return {
             userId: session.user.id, // For socket/polling identification
