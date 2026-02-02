@@ -99,32 +99,40 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
             <div className="absolute top-0 left-0 right-0 px-6 py-4 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
                 {/* Logo Section - Top & Center Aligned relative to text */}
                 <div className="flex flex-col animate-fade-in-down">
-                    <div className="flex flex-col items-start gap-0.5"> {/* Tighter gap for cohesion */}
+                    <div className="flex flex-row items-center gap-4"> {/* Horizontal Layout */}
                         {(() => {
                             console.log(`[🔍 Logo Render] config:`, config);
                             console.log(`[🔍 Logo Render] leftLogoUrl:`, config?.leftLogoUrl);
                             return null;
                         })()}
                         {config?.leftLogoUrl ? (
-                            // mix-blend-screen removes black background from the image
-                            // Increased height to h-14/16 for better visibility
+                            // mix-blend-screen removes black background
+                            // h-12 matches text size closer
                             <img
                                 src={config.leftLogoUrl}
                                 alt="Logo"
-                                className="h-16 w-auto object-contain object-left mix-blend-screen mb-1"
+                                className="h-14 w-auto object-contain mix-blend-screen"
                             />
                         ) : (
-                            <div className="relative">
-                                <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#8C7321] text-black rounded-lg flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.4)] mb-1">
-                                    <span className="font-serif font-bold text-3xl">J</span>
-                                </div>
+                            <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#8C7321] text-black rounded-lg flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.4)]">
+                                <span className="font-serif font-bold text-3xl">J</span>
                             </div>
                         )}
                         <div>
-                            {/* Gold Gradient Text for specific "Priority" emphasis */}
-                            <h1 className="text-2xl font-serif font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#F7E7CE] to-[#D4AF37] tracking-wider uppercase leading-none drop-shadow-sm">
-                                {config?.leftTitle || "Jatim Prioritas"}
-                            </h1>
+                            {/* Logic: First word White, Rest Gold */}
+                            {(() => {
+                                const title = config?.leftTitle || "Jatim Prioritas";
+                                const parts = title.split(' ');
+                                const firstWord = parts[0];
+                                const rest = parts.slice(1).join(' ');
+
+                                return (
+                                    <h1 className="text-3xl font-serif font-bold tracking-wider uppercase leading-none drop-shadow-sm flex gap-2">
+                                        <span className="text-white">{firstWord}</span>
+                                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#F7E7CE] to-[#D4AF37]">{rest}</span>
+                                    </h1>
+                                );
+                            })()}
                         </div>
                     </div>
                 </div>
