@@ -43,7 +43,6 @@ export async function getPairedDisplay() {
             // I will use `password: "display123"` and assume the Auth logic handles re-hashing or I will add the hash if I can.
             // Actually `actions.ts` has `bcrypt` imported at line 112. I can move it up or use it.
             role: "DISPLAY", // Enum usually uppercase
-            name: "Display Unit",
             pairedWithId: user.id, // Pair with Admin
         }
     });
