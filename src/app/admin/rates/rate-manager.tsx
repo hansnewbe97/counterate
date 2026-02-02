@@ -4,6 +4,7 @@ import { useState } from "react";
 import { updateForex, deleteForex } from "./actions";
 import { Button, Input } from "@/components/ui/components";
 import { getCurrencyDetails } from "@/lib/currency-data";
+import { formatCurrency } from "@/lib/utils";
 import { Edit, Trash2, X } from "lucide-react";
 
 export function RateManager({ initialForex }: { initialForex: any[] }) {
@@ -192,10 +193,10 @@ export function RateManager({ initialForex }: { initialForex: any[] }) {
                                             )}
                                         </td>
                                         <td className="p-3 font-bold text-white">{item.currency}</td>
-                                        <td className="p-3 text-[#D4AF37] font-mono">{item.ttBuy}</td>
-                                        <td className="p-3 text-[#D4AF37] font-mono">{item.ttSell}</td>
-                                        <td className="p-3 text-gray-400 font-mono">{item.bankBuy}</td>
-                                        <td className="p-3 text-gray-400 font-mono">{item.bankSell}</td>
+                                        <td className="p-3 text-[#D4AF37] font-mono">{formatCurrency(item.ttBuy)}</td>
+                                        <td className="p-3 text-[#D4AF37] font-mono">{formatCurrency(item.ttSell)}</td>
+                                        <td className="p-3 text-gray-400 font-mono">{formatCurrency(item.bankBuy)}</td>
+                                        <td className="p-3 text-gray-400 font-mono">{formatCurrency(item.bankSell)}</td>
                                         <td className="p-3">
                                             <div className="flex items-center justify-end gap-2">
                                                 <button

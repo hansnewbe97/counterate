@@ -5,6 +5,7 @@ import { getDisplayData } from "./actions";
 import { socket } from "@/lib/socketClient";
 import { AutoScrollList } from "@/components/display/AutoScrollList";
 import { getCurrencyDetails } from "@/lib/currency-data";
+import { formatCurrency } from "@/lib/utils";
 
 import { signOut } from "next-auth/react";
 import { Play, Maximize2 } from "lucide-react";
@@ -214,18 +215,18 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
 
                                         {/* TT Rates */}
                                         <div className="col-span-2 text-right text-base font-medium text-[#D4AF37] font-serif tracking-tight group-hover:text-white transition-colors">
-                                            {rate.ttBuy}
+                                            {formatCurrency(rate.ttBuy)}
                                         </div>
                                         <div className="col-span-2 text-right text-base font-medium text-[#D4AF37] font-serif tracking-tight group-hover:text-white transition-colors">
-                                            {rate.ttSell}
+                                            {formatCurrency(rate.ttSell)}
                                         </div>
 
                                         {/* Bank Rates */}
                                         <div className="col-span-2 text-right text-base font-medium text-gray-400/80 font-serif tracking-tight group-hover:text-white/80 transition-colors">
-                                            {rate.bankBuy}
+                                            {formatCurrency(rate.bankBuy)}
                                         </div>
                                         <div className="col-span-2 text-right text-base font-medium text-gray-400/80 font-serif tracking-tight group-hover:text-white/80 transition-colors">
-                                            {rate.bankSell}
+                                            {formatCurrency(rate.bankSell)}
                                         </div>
                                     </div>
                                 )}
