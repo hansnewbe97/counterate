@@ -41,29 +41,44 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
 
     useEffect(() => {
         // Socket listener
-        socket.on("connect", () => { });
+        socket.on("connect", () => {
+            console.log("[DisplayBoard] Socket connected");
+        });
 
         socket.on("data-update", async () => {
+            console.log("[DisplayBoard] Socket received data-update");
             const newData = await getDisplayData();
             if (newData) setData(newData);
         });
 
         socket.on("force-reload", ({ targetId }: { targetId: string }) => {
-            if (targetId === data?.userId) {
-                window.location.reload();
-            }
+            if (targetId === data?.userId) window.location.reload();
         });
 
         socket.on("force-logout", ({ targetId }: { targetId: string }) => {
-            if (targetId === data?.userId) {
-                signOut({ callbackUrl: "/login" });
-            }
+            if (targetId === data?.userId) signOut({ callbackUrl: "/login" });
         });
 
+        // Polling Fallback (Crucial for Vercel/Serverless where sockets might flaky)
+        const pollingInterval = setInterval(async () => {
+            // Silently fetch updates
+            const newData = await getDisplayData();
+            if (newData) {
+                setData(prev => {
+                    // Simple check to avoid unnecessary re-renders if deep comparison is expensive
+                    // For now, just setting it is fine as React handles diffing
+                    // Ideally we'd compare hash/timestamps
+                    return newData;
+                });
+            }
+        }, 15000); // Check every 15 seconds
+
         return () => {
+            socket.off("connect");
             socket.off("data-update");
             socket.off("force-reload");
             socket.off("force-logout");
+            clearInterval(pollingInterval);
         };
     }, [data?.userId]);
 
