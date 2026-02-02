@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { authenticate } from "./actions";
 import { Button, Input } from "@/components/ui/components";
-import { Lock, User, ArrowRight, ShieldCheck } from "lucide-react";
+import { Lock, User, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
     const [errorMessage, dispatch, isPending] = useActionState(
@@ -23,12 +23,11 @@ export default function LoginPage() {
 
             <div className="glass-card w-full max-w-md p-10 animate-fade-in-up relative z-10 border border-[#D4AF37]/20 shadow-[0_0_40px_rgba(212,175,55,0.1)]">
                 <div className="text-center mb-10 space-y-2">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-[#111] to-[#000] border border-[#D4AF37]/30 shadow-lg mb-6 animate-fade-in-up relative group">
-                        <div className="absolute inset-0 bg-[#D4AF37]/10 rounded-2xl blur-md group-hover:bg-[#D4AF37]/20 transition-all duration-500" />
-                        <ShieldCheck className="w-10 h-10 text-[#D4AF37] relative z-10" />
+                    <div className="inline-flex items-center justify-center w-24 h-24 mb-6 animate-fade-in-up relative group">
+                        <img src="/hc-logo.jpg" alt="HC Logo" className="w-full h-full object-contain rounded-lg" />
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight text-white animate-fade-in-up animate-delay-100 font-serif">
-                        Private Access
+                        Hans Corporation
                     </h1>
                     <p className="text-[#888888] text-sm animate-fade-in-up animate-delay-200 uppercase tracking-widest text-[10px]">
                         Authorized Personnel Only
