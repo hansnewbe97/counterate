@@ -151,7 +151,7 @@ export async function forceLogoutDisplay(displayId: string) {
     }
 }
 
-import bcrypt from "bcryptjs";
+
 
 export async function resetToDefaultPassword(displayId: string) {
     const session = await auth();
