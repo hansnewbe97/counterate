@@ -10,6 +10,11 @@ export default async function DisplayPage() {
     let session = null;
     try {
         session = await auth();
+        if (!session) {
+            // Automatically redirect to login if session is invalid
+            // This prevents the "Display Data Loading Failed" error screen for unauthenticated users
+            redirect("/login");
+        }
     } catch (e) {
         console.error("Auth check failed:", e);
     }
