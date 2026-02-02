@@ -93,83 +93,86 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
     const { forex, deposit, video, config } = data;
 
     // Stable reference for sources to prevent playback resets during polling
+    // Stable reference for sources to prevent playback resets during polling
     const activeSources = useMemo(() => {
         return (video?.sources || []).filter((s: any) => s.url);
-        const [videoIndex, setVideoIndex] = useState(0);
+    }, [JSON.stringify(video?.sources)]);
 
-        const handleVideoEnded = useCallback(() => {
-            setVideoIndex((prev) => (prev + 1) % activeSources.length);
-        }, [activeSources.length]);
+    const [videoIndex, setVideoIndex] = useState(0);
 
-        return (
-            <div className="relative flex h-full p-12 gap-12 bg-[#080808] text-gray-100 font-sans overflow-hidden selection:bg-[#D4AF37]/30">
-                {/* Ambient Background - Luxury Grid & Glow */}
-                <div className="absolute inset-0 pointer-events-none">
-                    {/* Subtle Luxury Grid */}
-                    <div
-                        className="absolute inset-0 opacity-[0.03]"
-                        style={{
-                            backgroundImage: `linear-gradient(#D4AF37 1px, transparent 1px), linear-gradient(90deg, #D4AF37 1px, transparent 1px)`,
-                            backgroundSize: '40px 40px'
-                        }}
-                    ></div>
+    const handleVideoEnded = useCallback(() => {
+        setVideoIndex((prev) => (prev + 1) % activeSources.length);
+    }, [activeSources.length]);
 
-                    {/* Deep Atmospheric Glows */}
-                    <div className="absolute top-[-20%] right-[-10%] w-[1200px] h-[1200px] bg-[radial-gradient(circle,rgba(212,175,55,0.08)_0%,transparent_70%)] pointer-events-none"></div>
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-[radial-gradient(circle,rgba(201,166,78,0.05)_0%,transparent_70%)] pointer-events-none"></div>
-                </div>
+    return (
+        <div className="relative flex h-full p-12 gap-12 bg-[#080808] text-gray-100 font-sans overflow-hidden selection:bg-[#D4AF37]/30">
+            {/* Ambient Background - Luxury Grid & Glow */}
+            <div className="absolute inset-0 pointer-events-none">
+                {/* Subtle Luxury Grid */}
+                <div
+                    className="absolute inset-0 opacity-[0.03]"
+                    style={{
+                        backgroundImage: `linear-gradient(#D4AF37 1px, transparent 1px), linear-gradient(90deg, #D4AF37 1px, transparent 1px)`,
+                        backgroundSize: '40px 40px'
+                    }}
+                ></div>
 
-                {/* Top Bar: Logo & Clock */}
-                <div className="absolute top-0 left-0 right-0 px-6 py-4 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
-                    {/* Logo Section - Top & Center Aligned relative to text */}
-                    <div className="flex flex-col animate-fade-in-down">
-                        {/* Logo Section - Vertical Stack (Strict Redesign) */}
-                        <div className="flex flex-col animate-fade-in-down items-left justify-center pt-2 gap-0">
-                            {/* Logo: Top, Centered, White Solid, No Background */}
-                            <div className="flex items-center justify-start">
-                                {config?.leftLogoUrl ? (
-                                    <img
-                                        src={config.leftLogoUrl}
-                                        alt="Logo"
-                                        // mix-blend-screen: Removes black box
-                                        // grayscale brightness-200: Forces non-white colors to look White Solid
-                                        className="h-24 w-auto object-contain mix-blend-screen grayscale brightness-200"
-                                    />
-                                ) : (
-                                    <div className="h-20 w-20 bg-[#D4AF37] text-black rounded flex items-center justify-center">
-                                        <span className="font-bold text-4xl">J</span>
-                                    </div>
-                                )}
-                            </div>
+                {/* Deep Atmospheric Glows */}
+                <div className="absolute top-[-20%] right-[-10%] w-[1200px] h-[1200px] bg-[radial-gradient(circle,rgba(212,175,55,0.08)_0%,transparent_70%)] pointer-events-none"></div>
+                <div className="absolute bottom-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-[radial-gradient(circle,rgba(201,166,78,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+            </div>
 
-                            {/* Text: Bottom, Centered, Split Colors (White/Gold Solid) */}
-                            <div>
-                                {(() => {
-                                    const title = config?.leftTitle || "Jatim Prioritas";
-                                    const parts = title.split(' ');
-                                    const firstWord = parts[0] || "JATIM";
-                                    const rest = parts.slice(1).join(' ') || "PRIORITAS";
+            {/* Top Bar: Logo & Clock */}
+            <div className="absolute top-0 left-0 right-0 px-6 py-4 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
+                {/* Logo Section - Top & Center Aligned relative to text */}
+                <div className="flex flex-col animate-fade-in-down">
+                    {/* Logo Section - Vertical Stack (Strict Redesign) */}
+                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-2 gap-0">
+                        {/* Logo: Top, Centered, White Solid, No Background */}
+                        <div className="flex items-center justify-start">
+                            {config?.leftLogoUrl ? (
+                                <img
+                                    src={config.leftLogoUrl}
+                                    alt="Logo"
+                                    // mix-blend-screen: Removes black box
+                                    // grayscale brightness-200: Forces non-white colors to look White Solid
+                                    className="h-24 w-auto object-contain mix-blend-screen grayscale brightness-200"
+                                />
+                            ) : (
+                                <div className="h-20 w-20 bg-[#D4AF37] text-black rounded flex items-center justify-center">
+                                    <span className="font-bold text-4xl">J</span>
+                                </div>
+                            )}
+                        </div>
 
-                                    return (
-                                        <h1 className="text-2xl font-bold tracking-widest uppercase leading-none flex gap-3 items-center justify-start">
-                                            {/* JATIM: Solid White */}
-                                            <span className="text-white font-sans">{firstWord}</span>
-                                            {/* PRIORITAS: Solid Gold #D4AF37 (No Gradient) */}
-                                            <span className="text-[#D4AF37] font-sans">{rest}</span>
-                                        </h1>
-                                    );
-                                })()}
-                            </div>
+                        {/* Text: Bottom, Centered, Split Colors (White/Gold Solid) */}
+                        <div>
+                            {(() => {
+                                const title = config?.leftTitle || "Jatim Prioritas";
+                                const parts = title.split(' ');
+                                const firstWord = parts[0] || "JATIM";
+                                const rest = parts.slice(1).join(' ') || "PRIORITAS";
+
+                                return (
+                                    <h1 className="text-2xl font-bold tracking-widest uppercase leading-none flex gap-3 items-center justify-start">
+                                        {/* JATIM: Solid White */}
+                                        <span className="text-white font-sans">{firstWord}</span>
+                                        {/* PRIORITAS: Solid Gold #D4AF37 (No Gradient) */}
+                                        <span className="text-[#D4AF37] font-sans">{rest}</span>
+                                    </h1>
+                                );
+                            })()}
                         </div>
                     </div>
+                </div>
 
 
 
-                    {/* Ticker Section - Centered */}
-                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[40%] flex items-center justify-center overflow-hidden z-40">
-                        {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") && (
-                            <div className="w-full h-full overflow-hidden relative group flex items-center">
-                                <style jsx>{`
+                {/* Ticker Section - Centered */}
+                <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[40%] flex items-center justify-center overflow-hidden z-40">
+                    {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") && (
+                        <div className="w-full h-full overflow-hidden relative group flex items-center">
+                            <style jsx>{`
                             @keyframes marquee-seamless {
                                 0% { transform: translate3d(0, 0, 0); }
                                 100% { transform: translate3d(-50%, 0, 0); }
@@ -182,415 +185,415 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                 animation-play-state: paused;
                             }
                         `}</style>
-                                <div className="flex w-max animate-marquee-seamless whitespace-nowrap">
-                                    {/* Render content multiple times with wide spacing for professional look */}
-                                    <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
-                                        {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
-                                    </span>
-                                    <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
-                                        {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
-                                    </span>
-                                    <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
-                                        {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
-                                    </span>
-                                    <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
-                                        {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
-                                    </span>
-                                    <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
-                                        {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
-                                    </span>
-                                    <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
-                                        {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
-                                    </span>
-                                </div>
+                            <div className="flex w-max animate-marquee-seamless whitespace-nowrap">
+                                {/* Render content multiple times with wide spacing for professional look */}
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                    {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
+                                </span>
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                    {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
+                                </span>
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                    {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
+                                </span>
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                    {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
+                                </span>
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                    {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
+                                </span>
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                    {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
+                                </span>
                             </div>
-                        )}
-                    </div>
-
-                    {/* Clock Section - Clean & Elegant */}
-                    <div className="text-right animate-fade-in-down w-[30%]">
-                        <Clock />
-                    </div>
+                        </div>
+                    )}
                 </div>
 
-                {/* Main Content Grid */}
-                <div className="relative w-full h-full flex gap-8 pt-36 z-10 pb-8">
+                {/* Clock Section - Clean & Elegant */}
+                <div className="text-right animate-fade-in-down w-[30%]">
+                    <Clock />
+                </div>
+            </div>
 
-                    {/* Left Column: Market Quotations */}
-                    <div className="w-1/2 flex flex-col h-full animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                        {/* Section Header */}
-                        <div className="mb-4 pl-2 border-l-2 border-[#D4AF37]">
-                            <h2 className="text-3xl font-serif font-bold text-white leading-none mb-1">INFO <span className="text-[#D4AF37]">KURS</span></h2>
-                            <div className="flex justify-between items-end">
-                                <span className="text-gray-500 text-[9px] uppercase tracking-[0.3em] ml-1">Daily Exchange Rate</span>
-                                <div className="flex items-center gap-1.5">
-                                    <span className="w-1 h-1 bg-[#D4AF37] rounded-full animate-pulse"></span>
-                                    <span className="text-[8px] text-[#D4AF37]/80 uppercase tracking-widest">Live Feed</span>
-                                </div>
-                            </div>
-                        </div>
+            {/* Main Content Grid */}
+            <div className="relative w-full h-full flex gap-8 pt-36 z-10 pb-8">
 
-                        {/* Table Container - Minimalist Glass */}
-                        <div className="flex-1 flex flex-col bg-white/[0.02] border border-white/10 rounded-lg relative overflow-hidden">
-                            {/* Table Headers */}
-                            <div className="grid grid-cols-12 px-4 py-3 text-[#888] text-xs font-bold uppercase tracking-[0.15em] border-b border-white/[0.08]">
-                                <div className="col-span-1"></div>
-                                <div className="col-span-1"></div>
-                                <div className="col-span-2 -ml-2">Currency</div>
-                                <div className="col-span-4 text-center text-[#D4AF37]">Telegraphic Transfer</div>
-                                <div className="col-span-4 text-center">Bank Notes</div>
-                            </div>
-                            <div className="grid grid-cols-12 px-4 py-1.5 text-[#555] text-[10px] font-bold uppercase tracking-widest mb-1">
-                                <div className="col-span-4 text-right"></div>
-                                <div className="col-span-2 text-right text-[#D4AF37]/60">Buy</div>
-                                <div className="col-span-2 text-right text-[#D4AF37]/60">Sell</div>
-                                <div className="col-span-2 text-right">Buy</div>
-                                <div className="col-span-2 text-right">Sell</div>
-                            </div>
-
-                            {/* List */}
-                            <div className="flex-1 overflow-hidden relative">
-
-                                <AutoScrollList
-                                    items={forex}
-                                    speed={0.5}
-                                    gap={0}
-                                    className="hide-scrollbar"
-                                    renderItem={(rate: any, idx: number) => (
-                                        <div key={`${rate.id}-${idx}`} className="grid grid-cols-12 items-center px-4 py-2.5 border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group">
-                                            <div className="col-span-1 flex items-center justify-center filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] brightness-110">
-                                                <Flag code={rate.currency} className="w-8 h-8 object-contain" />
-                                            </div>
-                                            <div className="col-span-1 font-bold text-white/90 font-mono text-base tracking-wide">
-                                                {rate.currency}
-                                            </div>
-                                            <div className="col-span-2 text-[8px] text-gray-500 uppercase tracking-wider font-medium truncate pr-2">
-                                                {rate.currencyName}
-                                            </div>
-
-                                            {/* TT Rates */}
-                                            <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
-                                                {formatCurrency(rate.ttBuy)}
-                                            </div>
-                                            <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
-                                                {formatCurrency(rate.ttSell)}
-                                            </div>
-
-                                            {/* Bank Rates */}
-                                            <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
-                                                {formatCurrency(rate.bankBuy)}
-                                            </div>
-                                            <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
-                                                {formatCurrency(rate.bankSell)}
-                                            </div>
-                                        </div>
-                                    )}
-                                />
+                {/* Left Column: Market Quotations */}
+                <div className="w-1/2 flex flex-col h-full animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                    {/* Section Header */}
+                    <div className="mb-4 pl-2 border-l-2 border-[#D4AF37]">
+                        <h2 className="text-3xl font-serif font-bold text-white leading-none mb-1">INFO <span className="text-[#D4AF37]">KURS</span></h2>
+                        <div className="flex justify-between items-end">
+                            <span className="text-gray-500 text-[9px] uppercase tracking-[0.3em] ml-1">Daily Exchange Rate</span>
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-1 h-1 bg-[#D4AF37] rounded-full animate-pulse"></span>
+                                <span className="text-[8px] text-[#D4AF37]/80 uppercase tracking-widest">Live Feed</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Right Column: Video & Deposits */}
-                    <div className="w-1/2 flex flex-col gap-8 h-full animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                    {/* Table Container - Minimalist Glass */}
+                    <div className="flex-1 flex flex-col bg-white/[0.02] border border-white/10 rounded-lg relative overflow-hidden">
+                        {/* Table Headers */}
+                        <div className="grid grid-cols-12 px-4 py-3 text-[#888] text-xs font-bold uppercase tracking-[0.15em] border-b border-white/[0.08]">
+                            <div className="col-span-1"></div>
+                            <div className="col-span-1"></div>
+                            <div className="col-span-2 -ml-2">Currency</div>
+                            <div className="col-span-4 text-center text-[#D4AF37]">Telegraphic Transfer</div>
+                            <div className="col-span-4 text-center">Bank Notes</div>
+                        </div>
+                        <div className="grid grid-cols-12 px-4 py-1.5 text-[#555] text-[10px] font-bold uppercase tracking-widest mb-1">
+                            <div className="col-span-4 text-right"></div>
+                            <div className="col-span-2 text-right text-[#D4AF37]/60">Buy</div>
+                            <div className="col-span-2 text-right text-[#D4AF37]/60">Sell</div>
+                            <div className="col-span-2 text-right">Buy</div>
+                            <div className="col-span-2 text-right">Sell</div>
+                        </div>
 
-                        {/* Video Section - Fixed Height for Visibility */}
-                        <div className="w-full shrink-0 aspect-video bg-black relative shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden rounded-sm group">
-                            {(() => {
-                                if (activeSources.length > 0) {
-                                    return (
-                                        <VideoPlayer
-                                            sources={activeSources}
-                                            currentIndex={videoIndex % activeSources.length}
-                                            onEnded={handleVideoEnded}
-                                        />
-                                    );
-                                }
+                        {/* List */}
+                        <div className="flex-1 overflow-hidden relative">
 
-                                return (
-                                    <div className="w-full h-full flex flex-col items-center justify-center bg-[#0C0C0C]">
-                                        <div className="text-[#333] tracking-[0.5em] text-[10px] uppercase font-serif">Video Feed Offline</div>
+                            <AutoScrollList
+                                items={forex}
+                                speed={0.5}
+                                gap={0}
+                                className="hide-scrollbar"
+                                renderItem={(rate: any, idx: number) => (
+                                    <div key={`${rate.id}-${idx}`} className="grid grid-cols-12 items-center px-4 py-2.5 border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group">
+                                        <div className="col-span-1 flex items-center justify-center filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] brightness-110">
+                                            <Flag code={rate.currency} className="w-8 h-8 object-contain" />
+                                        </div>
+                                        <div className="col-span-1 font-bold text-white/90 font-mono text-base tracking-wide">
+                                            {rate.currency}
+                                        </div>
+                                        <div className="col-span-2 text-[8px] text-gray-500 uppercase tracking-wider font-medium truncate pr-2">
+                                            {rate.currencyName}
+                                        </div>
+
+                                        {/* TT Rates */}
+                                        <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
+                                            {formatCurrency(rate.ttBuy)}
+                                        </div>
+                                        <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
+                                            {formatCurrency(rate.ttSell)}
+                                        </div>
+
+                                        {/* Bank Rates */}
+                                        <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
+                                            {formatCurrency(rate.bankBuy)}
+                                        </div>
+                                        <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
+                                            {formatCurrency(rate.bankSell)}
+                                        </div>
                                     </div>
-                                );
-                            })()}
+                                )}
+                            />
                         </div>
-
-                        {/* Deposit Tiers - Compact & Professional */}
-                        <div className="flex-1 flex flex-col min-h-0">
-                            <div className="flex items-center gap-3 mb-4 opacity-80">
-                                <span className="h-[1px] w-8 bg-[#D4AF37]"></span>
-                                <h3 className="text-lg font-serif text-white uppercase tracking-widest">Investment Yields</h3>
-                            </div>
-
-                            <div className="flex-1 overflow-hidden relative bg-white/[0.02] border border-white/10 rounded-lg p-2">
-                                <div className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-[#080808] to-transparent z-10 pointer-events-none"></div>
-                                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#080808] to-transparent z-10 pointer-events-none"></div>
-
-                                <AutoScrollList
-                                    items={deposit}
-                                    speed={0.3}
-                                    gap={12}
-                                    className="hide-scrollbar"
-                                    renderItem={(rate: any, idx: number) => (
-                                        <div key={`${rate.id}-${idx}`} className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-white/[0.03] to-transparent border-l border-white/10 hover:border-[#D4AF37] transition-all duration-500 group/tier mb-3">
-                                            <div className="flex flex-col">
-                                                <div className="flex items-baseline gap-1.5">
-                                                    <span className="text-2xl font-serif text-white group-hover/tier:text-[#D4AF37] transition-colors">{rate.tenor}</span>
-                                                    <span className="text-[10px] font-sans text-gray-400 font-bold uppercase tracking-[0.2em] group-hover/tier:text-[#D4AF37]/80 transition-colors">MONTHS</span>
-                                                </div>
-                                                <span className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-medium mt-1">Deposit Tenure</span>
-                                            </div>
-                                            <div className="flex items-baseline gap-2">
-                                                <span className="text-4xl font-light text-[#D4AF37] font-serif tracking-tighter">
-                                                    {rate.rate}%
-                                                </span>
-                                                <span className="text-[10px] text-gray-500 uppercase tracking-widest">p.a.</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                />
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
-                {/* Footer ticker or status could go here if needed, keeping it clean for now */}
+                {/* Right Column: Video & Deposits */}
+                <div className="w-1/2 flex flex-col gap-8 h-full animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
 
-                {/* Start Display Overlay (Fullscreen Trigger) */}
-                {!isFullscreen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl transition-all duration-1000">
-                        <div className="text-center group cursor-pointer animate-fade-in" onClick={toggleFullscreen}>
-                            <div className="w-32 h-32 rounded-full bg-[#D4AF37]/5 flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:bg-[#D4AF37]/15 transition-all duration-700 border border-[#D4AF37]/20 shadow-[0_0_80px_rgba(212,175,55,0.15)] relative overflow-hidden">
-                                {/* Inner pulse effect */}
-                                <div className="absolute inset-0 bg-[#D4AF37]/10 animate-pulse" />
-                                <Play size={48} className="text-[#D4AF37] fill-[#D4AF37] ml-2 relative z-10 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]" />
-                            </div>
-                            <h2 className="text-4xl font-serif font-bold text-white mb-3 tracking-[0.2em] uppercase">Start Display</h2>
-                            <p className="text-[#D4AF37]/40 text-xs tracking-[0.4em] uppercase font-medium group-hover:text-[#D4AF37]/80 transition-colors duration-500">
-                                Click to activate full screen monitor
-                            </p>
+                    {/* Video Section - Fixed Height for Visibility */}
+                    <div className="w-full shrink-0 aspect-video bg-black relative shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden rounded-sm group">
+                        {(() => {
+                            if (activeSources.length > 0) {
+                                return (
+                                    <VideoPlayer
+                                        sources={activeSources}
+                                        currentIndex={videoIndex % activeSources.length}
+                                        onEnded={handleVideoEnded}
+                                    />
+                                );
+                            }
+
+                            return (
+                                <div className="w-full h-full flex flex-col items-center justify-center bg-[#0C0C0C]">
+                                    <div className="text-[#333] tracking-[0.5em] text-[10px] uppercase font-serif">Video Feed Offline</div>
+                                </div>
+                            );
+                        })()}
+                    </div>
+
+                    {/* Deposit Tiers - Compact & Professional */}
+                    <div className="flex-1 flex flex-col min-h-0">
+                        <div className="flex items-center gap-3 mb-4 opacity-80">
+                            <span className="h-[1px] w-8 bg-[#D4AF37]"></span>
+                            <h3 className="text-lg font-serif text-white uppercase tracking-widest">Investment Yields</h3>
+                        </div>
+
+                        <div className="flex-1 overflow-hidden relative bg-white/[0.02] border border-white/10 rounded-lg p-2">
+                            <div className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-[#080808] to-transparent z-10 pointer-events-none"></div>
+                            <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#080808] to-transparent z-10 pointer-events-none"></div>
+
+                            <AutoScrollList
+                                items={deposit}
+                                speed={0.3}
+                                gap={12}
+                                className="hide-scrollbar"
+                                renderItem={(rate: any, idx: number) => (
+                                    <div key={`${rate.id}-${idx}`} className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-white/[0.03] to-transparent border-l border-white/10 hover:border-[#D4AF37] transition-all duration-500 group/tier mb-3">
+                                        <div className="flex flex-col">
+                                            <div className="flex items-baseline gap-1.5">
+                                                <span className="text-2xl font-serif text-white group-hover/tier:text-[#D4AF37] transition-colors">{rate.tenor}</span>
+                                                <span className="text-[10px] font-sans text-gray-400 font-bold uppercase tracking-[0.2em] group-hover/tier:text-[#D4AF37]/80 transition-colors">MONTHS</span>
+                                            </div>
+                                            <span className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-medium mt-1">Deposit Tenure</span>
+                                        </div>
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-4xl font-light text-[#D4AF37] font-serif tracking-tighter">
+                                                {rate.rate}%
+                                            </span>
+                                            <span className="text-[10px] text-gray-500 uppercase tracking-widest">p.a.</span>
+                                        </div>
+                                    </div>
+                                )}
+                            />
                         </div>
                     </div>
-                )}
-            </div >
+
+                </div>
+            </div>
+
+            {/* Footer ticker or status could go here if needed, keeping it clean for now */}
+
+            {/* Start Display Overlay (Fullscreen Trigger) */}
+            {!isFullscreen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl transition-all duration-1000">
+                    <div className="text-center group cursor-pointer animate-fade-in" onClick={toggleFullscreen}>
+                        <div className="w-32 h-32 rounded-full bg-[#D4AF37]/5 flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:bg-[#D4AF37]/15 transition-all duration-700 border border-[#D4AF37]/20 shadow-[0_0_80px_rgba(212,175,55,0.15)] relative overflow-hidden">
+                            {/* Inner pulse effect */}
+                            <div className="absolute inset-0 bg-[#D4AF37]/10 animate-pulse" />
+                            <Play size={48} className="text-[#D4AF37] fill-[#D4AF37] ml-2 relative z-10 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]" />
+                        </div>
+                        <h2 className="text-4xl font-serif font-bold text-white mb-3 tracking-[0.2em] uppercase">Start Display</h2>
+                        <p className="text-[#D4AF37]/40 text-xs tracking-[0.4em] uppercase font-medium group-hover:text-[#D4AF37]/80 transition-colors duration-500">
+                            Click to activate full screen monitor
+                        </p>
+                    </div>
+                </div>
+            )}
+        </div >
+    );
+}
+
+function Clock() {
+    const [time, setTime] = useState(new Date());
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        const timer = setInterval(() => setTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    if (!mounted) return null;
+
+    return (
+        <div className="flex flex-col items-end">
+            {/* Large Time Display */}
+            <span className="text-5xl font-light text-white font-mono tracking-wider tabular-nums">
+                {time.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}
+                <span className="text-lg ml-2 text-[#666]">{time.getSeconds().toString().padStart(2, '0')}</span>
+            </span>
+            {/* Elegant Date */}
+            <div className="flex items-center gap-2 mt-1">
+                <span className="h-[1px] w-6 bg-[#D4AF37]/50"></span>
+                <span className="text-xs text-[#D4AF37] uppercase tracking-[0.3em] font-medium ml-2">
+                    {time.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                </span>
+            </div>
+        </div>
+    );
+}
+
+function VideoPlayer({ sources, currentIndex, onEnded }: { sources: any[], currentIndex: number, onEnded: () => void }) {
+    const currentUrl = sources[currentIndex]?.url;
+
+    console.log(`[🔍 VideoPlayer] sources:`, sources);
+    console.log(`[🔍 VideoPlayer] currentUrl:`, currentUrl);
+
+    if (!currentUrl) {
+        return (
+            <div className="w-full h-full flex items-center justify-center bg-black border-4 border-red-500">
+                <div className="text-center">
+                    <div className="text-red-500 text-xl mb-2">⚠️ No Video Sources</div>
+                    <div className="text-gray-400 text-sm">Upload videos in admin panel</div>
+                </div>
+            </div>
         );
     }
 
-function Clock() {
-            const [time, setTime] = useState(new Date());
-            const [mounted, setMounted] = useState(false);
+    // Robust check for YouTube URLs (including normalized embed links)
+    const isYouTube = currentUrl.includes("youtube.com") || currentUrl.includes("youtu.be");
 
-            useEffect(() => {
-                setMounted(true);
-                const timer = setInterval(() => setTime(new Date()), 1000);
-                return () => clearInterval(timer);
-            }, []);
+    return (
+        <div className="w-full h-full relative bg-black group">
+            {isYouTube ? (
+                <YouTubeEmbed
+                    key={`yt-${currentIndex}`} // Force remount on change
+                    url={currentUrl}
+                    onEnded={onEnded}
+                />
+            ) : (
+                <NativeVideo
+                    key={`native-${currentIndex}`} // Force remount on change
+                    url={currentUrl}
+                    onEnded={onEnded}
+                />
+            )}
 
-            if (!mounted) return null;
-
-            return (
-                <div className="flex flex-col items-end">
-                    {/* Large Time Display */}
-                    <span className="text-5xl font-light text-white font-mono tracking-wider tabular-nums">
-                        {time.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}
-                        <span className="text-lg ml-2 text-[#666]">{time.getSeconds().toString().padStart(2, '0')}</span>
-                    </span>
-                    {/* Elegant Date */}
-                    <div className="flex items-center gap-2 mt-1">
-                        <span className="h-[1px] w-6 bg-[#D4AF37]/50"></span>
-                        <span className="text-xs text-[#D4AF37] uppercase tracking-[0.3em] font-medium ml-2">
-                            {time.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                        </span>
-                    </div>
-                </div>
-            );
-        }
-
-function VideoPlayer({ sources, currentIndex, onEnded }: { sources: any[], currentIndex: number, onEnded: () => void }) {
-            const currentUrl = sources[currentIndex]?.url;
-
-            console.log(`[🔍 VideoPlayer] sources:`, sources);
-            console.log(`[🔍 VideoPlayer] currentUrl:`, currentUrl);
-
-            if (!currentUrl) {
-                return (
-                    <div className="w-full h-full flex items-center justify-center bg-black border-4 border-red-500">
-                        <div className="text-center">
-                            <div className="text-red-500 text-xl mb-2">⚠️ No Video Sources</div>
-                            <div className="text-gray-400 text-sm">Upload videos in admin panel</div>
-                        </div>
-                    </div>
-                );
-            }
-
-            // Robust check for YouTube URLs (including normalized embed links)
-            const isYouTube = currentUrl.includes("youtube.com") || currentUrl.includes("youtu.be");
-
-            return (
-                <div className="w-full h-full relative bg-black group">
-                    {isYouTube ? (
-                        <YouTubeEmbed
-                            key={`yt-${currentIndex}`} // Force remount on change
-                            url={currentUrl}
-                            onEnded={onEnded}
-                        />
-                    ) : (
-                        <NativeVideo
-                            key={`native-${currentIndex}`} // Force remount on change
-                            url={currentUrl}
-                            onEnded={onEnded}
-                        />
-                    )}
-
-                    {/* Overlay Info - Always visible for verification */}
-                    <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded border border-white/10 text-[9px] font-bold text-[#D4AF37] opacity-80 z-50">
-                        v2.1 • CAM {currentIndex + 1} / {sources.length}
-                    </div>
-                </div>
-            );
-        }
+            {/* Overlay Info - Always visible for verification */}
+            <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded border border-white/10 text-[9px] font-bold text-[#D4AF37] opacity-80 z-50">
+                v2.1 • CAM {currentIndex + 1} / {sources.length}
+            </div>
+        </div>
+    );
+}
 
 function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
-            const videoId = url.match(/embed\/([^?]+)/)?.[1] || url.match(/[?&]v=([^&]+)/)?.[1];
-            const containerRef = useRef<HTMLDivElement>(null);
+    const videoId = url.match(/embed\/([^?]+)/)?.[1] || url.match(/[?&]v=([^&]+)/)?.[1];
+    const containerRef = useRef<HTMLDivElement>(null);
 
-            useEffect(() => {
-                if (!videoId) return;
+    useEffect(() => {
+        if (!videoId) return;
 
-                // Load YouTube IFrame Player API if not already loaded
-                if (!(window as any).YT) {
-                    const tag = document.createElement('script');
-                    tag.src = "https://www.youtube.com/iframe_api";
-                    const firstScriptTag = document.getElementsByTagName('script')[0];
-                    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+        // Load YouTube IFrame Player API if not already loaded
+        if (!(window as any).YT) {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+        }
+
+        let player: any;
+
+        const onPlayerReady = (event: any) => {
+            event.target.playVideo();
+        };
+
+        const onPlayerStateChange = (event: any) => {
+            if (event.data === (window as any).YT.PlayerState.ENDED) {
+                onEnded();
+            }
+        };
+
+        const initPlayer = () => {
+            // Need to target the element provided by ref
+            // Note: YT.Player replaces the target element with an Iframe.
+            // We must create a child div to be replaced, so the ref container stays intact.
+            if (!containerRef.current) return;
+
+            // Create a disposable div for YouTube to replace
+            const placeholder = document.createElement('div');
+            containerRef.current.appendChild(placeholder);
+
+            player = new (window as any).YT.Player(placeholder, {
+                height: '100%',
+                width: '100%',
+                videoId: videoId,
+                playerVars: {
+                    autoplay: 1,
+                    mute: 1,
+                    controls: 0,
+                    modestbranding: 1,
+                    rel: 0,
+                    showinfo: 0,
+                    iv_load_policy: 3,
+                    fs: 0
+                },
+                events: {
+                    onReady: onPlayerReady,
+                    onStateChange: onPlayerStateChange
                 }
+            });
+        };
 
-                let player: any;
+        if ((window as any).YT && (window as any).YT.Player) {
+            initPlayer();
+        } else {
+            const previousReady = (window as any).onYouTubeIframeAPIReady;
+            (window as any).onYouTubeIframeAPIReady = () => {
+                if (previousReady) previousReady();
+                initPlayer();
+            };
+        }
 
-                const onPlayerReady = (event: any) => {
-                    event.target.playVideo();
-                };
-
-                const onPlayerStateChange = (event: any) => {
-                    if (event.data === (window as any).YT.PlayerState.ENDED) {
-                        onEnded();
-                    }
-                };
-
-                const initPlayer = () => {
-                    // Need to target the element provided by ref
-                    // Note: YT.Player replaces the target element with an Iframe.
-                    // We must create a child div to be replaced, so the ref container stays intact.
-                    if (!containerRef.current) return;
-
-                    // Create a disposable div for YouTube to replace
-                    const placeholder = document.createElement('div');
-                    containerRef.current.appendChild(placeholder);
-
-                    player = new (window as any).YT.Player(placeholder, {
-                        height: '100%',
-                        width: '100%',
-                        videoId: videoId,
-                        playerVars: {
-                            autoplay: 1,
-                            mute: 1,
-                            controls: 0,
-                            modestbranding: 1,
-                            rel: 0,
-                            showinfo: 0,
-                            iv_load_policy: 3,
-                            fs: 0
-                        },
-                        events: {
-                            onReady: onPlayerReady,
-                            onStateChange: onPlayerStateChange
-                        }
-                    });
-                };
-
-                if ((window as any).YT && (window as any).YT.Player) {
-                    initPlayer();
-                } else {
-                    const previousReady = (window as any).onYouTubeIframeAPIReady;
-                    (window as any).onYouTubeIframeAPIReady = () => {
-                        if (previousReady) previousReady();
-                        initPlayer();
-                    };
+        return () => {
+            if (player && player.destroy) {
+                try {
+                    player.destroy();
+                } catch (e) {
+                    console.error("Error destroying YT player", e);
                 }
+            }
+            // Ensure container is clean (though React handles the container itself)
+            if (containerRef.current) {
+                containerRef.current.innerHTML = '';
+            }
+        };
+    }, [videoId, onEnded]); // Removed containerId dependency
 
-                return () => {
-                    if (player && player.destroy) {
-                        try {
-                            player.destroy();
-                        } catch (e) {
-                            console.error("Error destroying YT player", e);
-                        }
-                    }
-                    // Ensure container is clean (though React handles the container itself)
-                    if (containerRef.current) {
-                        containerRef.current.innerHTML = '';
-                    }
-                };
-            }, [videoId, onEnded]); // Removed containerId dependency
+    if (!videoId) return <div className="w-full h-full flex items-center justify-center text-red-500 text-xs">Invalid YouTube URL</div>;
 
-            if (!videoId) return <div className="w-full h-full flex items-center justify-center text-red-500 text-xs">Invalid YouTube URL</div>;
-
-            return (
-                <div className="w-full h-full">
-                    {/* 
+    return (
+        <div className="w-full h-full">
+            {/* 
                 Wrapper strategy: 
                 React controls this outer div (via ref). 
                 We manually append a child for YouTube to replace/destroy.
                 This keeps React's Virtual DOM in sync with the real DOM structure it expects.
             */}
-                    <div ref={containerRef} className="w-full h-full" />
-                </div>
-            );
-        }
+            <div ref={containerRef} className="w-full h-full" />
+        </div>
+    );
+}
 
 function NativeVideo({ url, onEnded }: { url: string, onEnded: () => void }) {
-            const videoRef = useRef<HTMLVideoElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
-            useEffect(() => {
-                if (videoRef.current) {
-                    videoRef.current.play().catch(err => console.log("Autoplay prevented:", err));
-                }
-            }, [url]);
-
-            return (
-                <video
-                    ref={videoRef}
-                    src={url}
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    muted
-                    playsInline
-                    onEnded={onEnded}
-                    onError={(e) => console.error("Video load error", e)}
-                />
-            );
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.play().catch(err => console.log("Autoplay prevented:", err));
         }
+    }, [url]);
+
+    return (
+        <video
+            ref={videoRef}
+            src={url}
+            className="w-full h-full object-cover"
+            autoPlay
+            muted
+            playsInline
+            onEnded={onEnded}
+            onError={(e) => console.error("Video load error", e)}
+        />
+    );
+}
 
 function Flag({ code, className }: { code: string; className?: string }) {
-            const details = getCurrencyDetails(code);
+    const details = getCurrencyDetails(code);
 
-            if (details.countryCode) {
-                return (
-                    <div className={`relative ${className}`}>
-                        <div className="absolute inset-0 rounded-full border border-[#D4AF37]/50 shadow-[0_0_10px_rgba(212,175,55,0.3)] z-10 pointer-events-none" />
-                        <img
-                            src={`https://flagcdn.com/w80/${details.countryCode}.png`}
-                            alt={code}
-                            className="w-full h-full object-cover rounded-full"
-                        />
-                    </div>
-                );
-            }
+    if (details.countryCode) {
+        return (
+            <div className={`relative ${className}`}>
+                <div className="absolute inset-0 rounded-full border border-[#D4AF37]/50 shadow-[0_0_10px_rgba(212,175,55,0.3)] z-10 pointer-events-none" />
+                <img
+                    src={`https://flagcdn.com/w80/${details.countryCode}.png`}
+                    alt={code}
+                    className="w-full h-full object-cover rounded-full"
+                />
+            </div>
+        );
+    }
 
-            return (
-                <span className="text-2xl opacity-80 filter drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
-                    {details.flag || "🏳️"}
-                </span>
-            );
-        }
+    return (
+        <span className="text-2xl opacity-80 filter drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+            {details.flag || "🏳️"}
+        </span>
+    );
+}
 
