@@ -34,51 +34,42 @@ export function AutoScrollList<T extends { id?: string }>({
         return () => window.removeEventListener("resize", checkScroll);
     }, [items]);
 
-    useEffect(() => {
-        if (!shouldScroll || !containerRef.current) return;
-
-        const container = containerRef.current;
-        let animationFrameId: number;
-        let scrollTop = 0;
-
-        const scroll = () => {
-            scrollTop += speed;
-
-            // If we've scrolled past the first set of items (half the total scroll height), reset to 0
-            // The content is [Items] [Items], so scrollHeight/2 is the height of one set.
-            if (scrollTop >= container.scrollHeight / 2) {
-                scrollTop = 0;
-            }
-
-            container.scrollTop = scrollTop;
-            animationFrameId = requestAnimationFrame(scroll);
-        };
-
-        animationFrameId = requestAnimationFrame(scroll);
-
-        return () => cancelAnimationFrame(animationFrameId);
-    }, [shouldScroll, speed]);
-
     return (
         <div
             ref={containerRef}
             className={`overflow-hidden relative ${className}`}
             style={{ height: '100%' }}
         >
-            {/* 
-                We render the items twice to create a seamless loop.
-                When the first set scrolls out of view, we reset to the top.
-            */}
-            <div ref={contentRef} className="flex flex-col" style={{ gap }}>
-                {items.map((item, index) => renderItem(item, index))}
-                {shouldScroll && items.map((item, index) => renderItem(item, index + items.length))}
-            </div>
-
-            {/* Gradient Mask for top/bottom fading only if scrolling */}
-            {shouldScroll && (
-                <>
-                    {/* Gradients removed for visibility */}
-                </>
+            {shouldScroll ? (
+                // CSS Animation Wrapper
+                <div
+                    className="flex flex-col animate-scroll-vertical"
+                    style={{
+                        gap,
+                        // Calculate duration based on item count to maintain consistent speed
+                        // Base speed: 5 seconds per item roughly, adjust as needed or use pure speed prop
+                        animationDuration: `${items.length * (10 / speed)}s`
+                    }}
+                >
+                    <style jsx global>{`
+                        @keyframes scroll-vertical {
+                            0% { transform: translate3d(0, 0, 0); }
+                            100% { transform: translate3d(0, -50%, 0); }
+                        }
+                        .animate-scroll-vertical {
+                            animation: scroll-vertical linear infinite;
+                            will-change: transform;
+                        }
+                    `}</style>
+                    {/* Render items twice for seamless loop */}
+                    {items.map((item, index) => renderItem(item, index))}
+                    {items.map((item, index) => renderItem(item, index + items.length))}
+                </div>
+            ) : (
+                // Static List if no scroll needed
+                <div className="flex flex-col" style={{ gap }}>
+                    {items.map((item, index) => renderItem(item, index))}
+                </div>
             )}
         </div>
     );
