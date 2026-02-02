@@ -20,21 +20,26 @@ export default async function UsersPage() {
             orderBy: { username: "asc" }
         });
 
-        // Filter ADMIN in JS
-        const adminUsers = allUsers.filter((u: any) => u.role === "ADMIN");
+        // Filter out SUPER_ADMIN, show everything else (ADMIN and DISPLAY)
+        // This ensures we see orphan displays too
+        const adminUsers = allUsers.filter((u: any) => u.role !== "SUPER_ADMIN" && u.role !== "ADMIN");
+        // Actually, the original logic expected ADMINs as the "Primary" unit.
+        // But the DB Dump shows only DISPLAY users. 
+        // Let's show ALL users (except self/superadmin) so we can debug/manage them.
+        const visibleUsers = allUsers.filter((u: any) => u.role !== "SUPER_ADMIN");
 
         debugTotalUsers = allUsers.length;
-        debugAdminUsers = adminUsers.length;
+        debugAdminUsers = visibleUsers.length;
         debugDump = allUsers.map((u: any) => `${u.username} [${u.role}]`).join(', ');
 
-        console.log(`[UsersPage DIRECT] Total: ${allUsers.length}, Admins: ${adminUsers.length}`);
+        console.log(`[UsersPage DIRECT] Total: ${allUsers.length}, Visible: ${visibleUsers.length}`);
 
         // Get configs
         const configs = await prisma.displayConfig.findMany({
-            where: { adminId: { in: adminUsers.map((u: any) => u.id) } }
+            where: { adminId: { in: visibleUsers.map((u: any) => u.id) } }
         });
 
-        users = adminUsers.map((user: any) => ({
+        users = visibleUsers.map((user: any) => ({
             ...user,
             displayConfig: configs.find((c: any) => c.adminId === user.id)
         }));
