@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { getDisplayData } from "./actions";
 import { socket } from "@/lib/socketClient";
 import { AutoScrollList } from "@/components/display/AutoScrollList";
@@ -92,9 +92,10 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
 
     const { forex, deposit, video, config } = data;
 
-    // Calculate active sources here to manage state
-    const sources = video?.sources || [];
-    const activeSources = sources.filter((s: any) => s.url);
+    // Stable reference for sources to prevent playback resets during polling
+    const activeSources = useMemo(() => {
+        return (video?.sources || []).filter((s: any) => s.url);
+    }, [JSON.stringify(video?.sources)]);
     const [videoIndex, setVideoIndex] = useState(0);
 
     const handleVideoEnded = () => {
