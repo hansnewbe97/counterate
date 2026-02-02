@@ -115,7 +115,7 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                 {/* Logo Section - Top & Center Aligned relative to text */}
                 <div className="flex flex-col animate-fade-in-down">
                     {/* Logo Section - Vertical Stack (Strict Redesign) */}
-                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-2 gap-4">
+                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-2 gap-0">
                         {/* Logo: Top, Centered, White Solid, No Background */}
                         <div className="flex items-center justify-start">
                             {config?.leftLogoUrl ? (
