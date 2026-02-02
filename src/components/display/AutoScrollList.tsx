@@ -17,22 +17,9 @@ export function AutoScrollList<T extends { id?: string }>({
     className = "",
     gap = 0
 }: AutoScrollListProps<T>) {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-    const [shouldScroll, setShouldScroll] = useState(false);
-
-    useEffect(() => {
-        const checkScroll = () => {
-            if (containerRef.current && contentRef.current) {
-                // If content height > container height, enable scroll
-                setShouldScroll(contentRef.current.scrollHeight > containerRef.current.clientHeight);
-            }
-        };
-
-        checkScroll();
-        window.addEventListener("resize", checkScroll);
-        return () => window.removeEventListener("resize", checkScroll);
-    }, [items]);
+    // Always scroll if we have items, regardless of height, to ensure "Live" feel
+    // unless explicitly disabled or empty
+    const shouldScroll = items.length > 0;
 
     return (
         <div
@@ -46,9 +33,11 @@ export function AutoScrollList<T extends { id?: string }>({
                     className="flex flex-col animate-scroll-vertical"
                     style={{
                         gap,
-                        // Calculate duration based on item count to maintain consistent speed
-                        // Base speed: 5 seconds per item roughly, adjust as needed or use pure speed prop
-                        animationDuration: `${items.length * (10 / speed)}s`
+                        // Fix speed: e.g. 50px per second. Total height = items * height.
+                        // Let's approximate: 3s per item? 
+                        // If speed is 0.5 (from props), previously it was pixels/frame. 
+                        // Now let's try a standard duration based on list length.
+                        animationDuration: `${items.length * 5}s`
                     }}
                 >
                     <style jsx global>{`
@@ -60,13 +49,16 @@ export function AutoScrollList<T extends { id?: string }>({
                             animation: scroll-vertical linear infinite;
                             will-change: transform;
                         }
+                        /* Pause on hover for readability */
+                        .animate-scroll-vertical:hover {
+                            animation-play-state: paused;
+                        }
                     `}</style>
                     {/* Render items twice for seamless loop */}
                     {items.map((item, index) => renderItem(item, index))}
                     {items.map((item, index) => renderItem(item, index + items.length))}
                 </div>
             ) : (
-                // Static List if no scroll needed
                 <div className="flex flex-col" style={{ gap }}>
                     {items.map((item, index) => renderItem(item, index))}
                 </div>
