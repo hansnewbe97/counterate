@@ -217,8 +217,8 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                 speed={0.5}
                                 gap={0}
                                 className="hide-scrollbar"
-                                renderItem={(rate: any) => (
-                                    <div key={rate.id} className="grid grid-cols-12 items-center px-4 py-2.5 border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group">
+                                renderItem={(rate: any, idx: number) => (
+                                    <div key={`${rate.id}-${idx}`} className="grid grid-cols-12 items-center px-4 py-2.5 border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group">
                                         <div className="col-span-1 flex items-center justify-center filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] brightness-110">
                                             <Flag code={rate.currency} className="w-8 h-8 object-contain" />
                                         </div>
@@ -293,8 +293,8 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                 speed={0.3}
                                 gap={12}
                                 className="hide-scrollbar"
-                                renderItem={(rate: any) => (
-                                    <div key={rate.id} className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-white/[0.03] to-transparent border-l border-white/10 hover:border-[#D4AF37] transition-all duration-500 group/tier mb-3">
+                                renderItem={(rate: any, idx: number) => (
+                                    <div key={`${rate.id}-${idx}`} className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-white/[0.03] to-transparent border-l border-white/10 hover:border-[#D4AF37] transition-all duration-500 group/tier mb-3">
                                         <div className="flex flex-col">
                                             <div className="flex items-baseline gap-1.5">
                                                 <span className="text-2xl font-serif text-white group-hover/tier:text-[#D4AF37] transition-colors">{rate.tenor}</span>
@@ -420,7 +420,12 @@ function VideoPlayer({ sources }: { sources: any[] }) {
 
 function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
     const videoId = url.match(/embed\/([^?]+)/)?.[1] || url.match(/[?&]v=([^&]+)/)?.[1];
-    const [containerId] = useState(() => `youtube-player-${Math.random().toString(36).substr(2, 9)}`);
+    const [containerId, setContainerId] = useState<string>("");
+
+    useEffect(() => {
+        // Generate ID only on client side to avoid hydration mismatch
+        setContainerId(`youtube-player-${Math.random().toString(36).substr(2, 9)}`);
+    }, []);
 
     useEffect(() => {
         if (!videoId) return;
