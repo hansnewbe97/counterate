@@ -99,25 +99,30 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
             <div className="absolute top-0 left-0 right-0 px-6 py-4 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
                 {/* Logo Section - Top & Center Aligned relative to text */}
                 <div className="flex flex-col animate-fade-in-down">
-                    <div className="flex flex-col items-start gap-2">
+                    <div className="flex flex-col items-start gap-0.5"> {/* Tighter gap for cohesion */}
                         {(() => {
                             console.log(`[🔍 Logo Render] config:`, config);
                             console.log(`[🔍 Logo Render] leftLogoUrl:`, config?.leftLogoUrl);
                             return null;
                         })()}
                         {config?.leftLogoUrl ? (
-                            <img src={config.leftLogoUrl} alt="Logo" className="h-10 object-contain mb-1" />
+                            // mix-blend-screen removes black background from the image
+                            // Increased height to h-14/16 for better visibility
+                            <img
+                                src={config.leftLogoUrl}
+                                alt="Logo"
+                                className="h-16 w-auto object-contain object-left mix-blend-screen mb-1"
+                            />
                         ) : (
                             <div className="relative">
-                                <div className="w-10 h-10 bg-gradient-to-br from-[#D4AF37] to-[#8C7321] text-black rounded-lg flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.4)] mb-1">
-                                    <span className="font-serif font-bold text-2xl">J</span>
+                                <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#8C7321] text-black rounded-lg flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.4)] mb-1">
+                                    <span className="font-serif font-bold text-3xl">J</span>
                                 </div>
-                                {/* Red debug indicator */}
-                                <div className="absolute -top-2 -right-2 w-3 h-3 bg-red-500 rounded-full animate-pulse" title="No logo uploaded" />
                             </div>
                         )}
                         <div>
-                            <h1 className="text-lg font-serif font-bold text-white tracking-wide uppercase leading-tight">
+                            {/* Gold Gradient Text for specific "Priority" emphasis */}
+                            <h1 className="text-2xl font-serif font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#F7E7CE] to-[#D4AF37] tracking-wider uppercase leading-none drop-shadow-sm">
                                 {config?.leftTitle || "Jatim Prioritas"}
                             </h1>
                         </div>
