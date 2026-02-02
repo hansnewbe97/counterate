@@ -214,18 +214,18 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                         </div>
 
                                         {/* TT Rates */}
-                                        <div className="col-span-2 text-right text-base font-medium text-white font-serif tracking-tight">
+                                        <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
                                             {formatCurrency(rate.ttBuy)}
                                         </div>
-                                        <div className="col-span-2 text-right text-base font-medium text-white font-serif tracking-tight">
+                                        <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
                                             {formatCurrency(rate.ttSell)}
                                         </div>
 
                                         {/* Bank Rates */}
-                                        <div className="col-span-2 text-right text-base font-medium text-[#D4AF37] font-serif tracking-tight">
+                                        <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
                                             {formatCurrency(rate.bankBuy)}
                                         </div>
-                                        <div className="col-span-2 text-right text-base font-medium text-[#D4AF37] font-serif tracking-tight">
+                                        <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
                                             {formatCurrency(rate.bankSell)}
                                         </div>
                                     </div>
