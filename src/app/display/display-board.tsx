@@ -16,6 +16,13 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
     const [data, setData] = useState(initialData);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
+    // Debug logging
+    useEffect(() => {
+        console.log(`[🔍 DisplayBoard] Initial Data:`, initialData);
+        console.log(`[🔍 DisplayBoard] Config:`, initialData?.config);
+        console.log(`[🔍 DisplayBoard] Video:`, initialData?.video);
+    }, []);
+
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch((err) => {
@@ -93,11 +100,20 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                 {/* Logo Section - Top & Center Aligned relative to text */}
                 <div className="flex flex-col animate-fade-in-down">
                     <div className="flex flex-col items-start gap-2">
+                        {(() => {
+                            console.log(`[🔍 Logo Render] config:`, config);
+                            console.log(`[🔍 Logo Render] leftLogoUrl:`, config?.leftLogoUrl);
+                            return null;
+                        })()}
                         {config?.leftLogoUrl ? (
                             <img src={config.leftLogoUrl} alt="Logo" className="h-10 object-contain mb-1" />
                         ) : (
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#D4AF37] to-[#8C7321] text-black rounded-lg flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.4)] mb-1">
-                                <span className="font-serif font-bold text-2xl">J</span>
+                            <div className="relative">
+                                <div className="w-10 h-10 bg-gradient-to-br from-[#D4AF37] to-[#8C7321] text-black rounded-lg flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.4)] mb-1">
+                                    <span className="font-serif font-bold text-2xl">J</span>
+                                </div>
+                                {/* Red debug indicator */}
+                                <div className="absolute -top-2 -right-2 w-3 h-3 bg-red-500 rounded-full animate-pulse" title="No logo uploaded" />
                             </div>
                         )}
                         <div>
@@ -357,7 +373,19 @@ function VideoPlayer({ sources }: { sources: any[] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const currentUrl = sources[currentIndex]?.url;
 
-    if (!currentUrl) return null;
+    console.log(`[🔍 VideoPlayer] sources:`, sources);
+    console.log(`[🔍 VideoPlayer] currentUrl:`, currentUrl);
+
+    if (!currentUrl) {
+        return (
+            <div className="w-full h-full flex items-center justify-center bg-black border-4 border-red-500">
+                <div className="text-center">
+                    <div className="text-red-500 text-xl mb-2">⚠️ No Video Sources</div>
+                    <div className="text-gray-400 text-sm">Upload videos in admin panel</div>
+                </div>
+            </div>
+        );
+    }
 
     const handleEnded = () => {
         setCurrentIndex((prev) => (prev + 1) % sources.length);

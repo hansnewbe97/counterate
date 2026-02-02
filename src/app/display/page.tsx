@@ -67,7 +67,9 @@ export default async function DisplayPage() {
                     video: admin.videoDisplay || null,
                     config: admin.displayConfig || null
                 };
-                console.log(`[DisplayPage] Loaded data for user ${session.user.username}`);
+                console.log(`[🔍 DisplayPage] Loaded data for user ${session.user.username}`);
+                console.log(`[🔍 DisplayPage] Config:`, JSON.stringify(admin.displayConfig, null, 2));
+                console.log(`[🔍 DisplayPage] Video:`, JSON.stringify(admin.videoDisplay, null, 2));
             } else {
                 console.warn(`[DisplayPage] No admin found for user ${session.user.username}`);
             }
