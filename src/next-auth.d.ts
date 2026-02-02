@@ -6,6 +6,7 @@ declare module "next-auth" {
         role: "SUPER_ADMIN" | "ADMIN" | "DISPLAY";
         status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
         username: string;
+        sessionVersion?: number;
     }
 
     interface Session {
@@ -22,5 +23,6 @@ declare module "next-auth/jwt" {
         role: "SUPER_ADMIN" | "ADMIN" | "DISPLAY";
         id: string;
         username: string;
+        sessionVersion?: number;
     }
 }

@@ -19,6 +19,9 @@ model User {
   updatedAt DateTime @updatedAt
   createdBy String?
   
+  // Session Management
+  sessionVersion Int @default(0)
+  
   // Pairing Relationship (Admin <-> Display)
   pairedUserId String? @unique
   pairedUser   User?   @relation("UserPairing", fields: [pairedUserId], references: [id], onDelete: Cascade)

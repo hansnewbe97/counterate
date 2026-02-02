@@ -51,6 +51,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     if (passwordsMatch) {
                         console.log("Login successful for:", username);
 
+                        // Increment session version to invalidate other sessions
+                        const updatedUser = await prisma.user.update({
+                            where: { id: user.id },
+                            data: { sessionVersion: { increment: 1 } }
+                        });
+
                         await logActivity(user.id, "LOGIN", "User logged in via credentials");
 
                         return {
@@ -58,6 +64,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             username: user.username,
                             role: user.role,
                             status: user.status,
+                            sessionVersion: updatedUser.sessionVersion // Pass new version to token
                         };
                     } else {
                         console.log("Password mismatch for:", username);
@@ -71,17 +78,38 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }),
     ],
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
             if (user) {
                 token.role = user.role;
                 token.id = user.id ?? "";
                 token.username = user.username ?? "";
+                token.sessionVersion = (user as any).sessionVersion;
             }
             return token;
         },
         async session({ session, token }) {
             if (token && session.user) {
-                session.user.role = token.role as "SUPER_ADMIN" | "ADMIN" | "DISPLAY";
+                // Verify session version from DB
+                // This ensures we check if the session is still valid
+                if (token.id) {
+                    const latestUser = await prisma.user.findUnique({
+                        where: { id: token.id as string },
+                        select: { sessionVersion: true, role: true } // Also fetch role for real-time update
+                    });
+
+                    // If user is deleted or session version doesn't match, invalidate
+                    // In next-auth, returning null or empty object usually doesn't force logout immediately on client in all strategies,
+                    // but it prevents access to protected resources.
+                    // Ideally we should handle this. 
+
+                    if (!latestUser || latestUser.sessionVersion !== token.sessionVersion) {
+                        // Returning null/modified session to indicate invalid
+                        return { ...session, user: null, error: "SessionExpired" } as any;
+                    }
+
+                    session.user.role = latestUser.role as "SUPER_ADMIN" | "ADMIN" | "DISPLAY";
+                }
+
                 session.user.id = token.id as string;
                 session.user.username = token.username as string;
             }
