@@ -40,13 +40,6 @@ export async function getPairedDisplay() {
                 password: "$2a$10$YourReferencedHashHereOrJustPlainStringIfDevButBetterDefault",
                 role: "DISPLAY", // Enum usually uppercase
                 pairedUserId: user.id, // Pair with Admin
-                DisplayConfig: {
-                    create: {
-                        adminId: user.id,
-                        showClock: true,
-                        marqueeText: "Welcome to Jatim Prioritas",
-                    }
-                }
             }
         });
 
