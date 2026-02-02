@@ -5,12 +5,15 @@ import { getBrandingConfig, updateBrandingConfig } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Save, Monitor } from "lucide-react";
+import { Loader2, Save, Monitor, Upload, CheckCircle, XCircle } from "lucide-react";
 
 export default function BrandingPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [config, setConfig] = useState<any>(null);
+    const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
+    const [logoPreview, setLogoPreview] = useState<string | null>(null);
+    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
     useEffect(() => {
         loadConfig();
@@ -22,13 +25,39 @@ export default function BrandingPage() {
         setLoading(false);
     }
 
+    function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const file = event.target.files?.[0];
+        if (file) {
+            setSelectedLogo(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setLogoPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setSaving(true);
+        setMessage(null);
+
         const formData = new FormData(event.currentTarget);
 
-        await updateBrandingConfig(formData);
-        await loadConfig(); // Reload to see new image URLs
+        try {
+            const result = await updateBrandingConfig(formData);
+            if (result.success) {
+                setMessage({ type: 'success', text: 'Branding berhasil disimpan!' });
+                await loadConfig();
+                setSelectedLogo(null);
+                setLogoPreview(null);
+            } else {
+                setMessage({ type: 'error', text: result.error || 'Gagal menyimpan' });
+            }
+        } catch (error) {
+            setMessage({ type: 'error', text: 'Terjadi kesalahan saat menyimpan' });
+        }
+
         setSaving(false);
     }
 
@@ -52,6 +81,17 @@ export default function BrandingPage() {
                 </div>
             </div>
 
+            {/* Success/Error Message */}
+            {message && (
+                <div className={`p-4 rounded-xl border flex items-center gap-3 animate-fade-in-up ${message.type === 'success'
+                        ? 'bg-green-900/20 border-green-500/30 text-green-400'
+                        : 'bg-red-900/20 border-red-500/30 text-red-400'
+                    }`}>
+                    {message.type === 'success' ? <CheckCircle size={20} /> : <XCircle size={20} />}
+                    <span className="font-medium">{message.text}</span>
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Header Branding Section */}
                 <div className="glass-card p-6 border border-[#333] rounded-xl bg-[#0A0A0A]">
@@ -72,15 +112,36 @@ export default function BrandingPage() {
 
                         <div className="space-y-4">
                             <Label className="text-gray-300">Brand Logo (Icon)</Label>
-                            <div className="flex items-start gap-4">
-                                {config?.leftLogoUrl && (
-                                    <div className="w-16 h-16 bg-black/50 border border-[#333] rounded-lg flex items-center justify-center overflow-hidden shrink-0">
-                                        <img src={config.leftLogoUrl} alt="Logo" className="w-full h-full object-contain p-2" />
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-4">
+                                    {/* Current Logo Preview */}
+                                    {(logoPreview || config?.leftLogoUrl) && (
+                                        <div className="w-20 h-20 bg-black/50 border border-[#333] rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+                                            <img
+                                                src={logoPreview || config.leftLogoUrl}
+                                                alt="Logo Preview"
+                                                className="w-full h-full object-contain p-2"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="flex-1 space-y-2">
+                                        <div className="relative">
+                                            <Input
+                                                type="file"
+                                                name="leftLogo"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                className="glass-input text-gray-400 file:text-[#D4AF37] file:bg-transparent file:border-0 file:font-medium file:cursor-pointer cursor-pointer"
+                                            />
+                                        </div>
+                                        {selectedLogo && (
+                                            <div className="flex items-center gap-2 text-sm text-[#D4AF37]">
+                                                <Upload size={16} />
+                                                <span className="truncate">{selectedLogo.name}</span>
+                                            </div>
+                                        )}
+                                        <p className="text-xs text-gray-500">Recommended: Square PNG/SVG with transparency.</p>
                                     </div>
-                                )}
-                                <div className="flex-1">
-                                    <Input type="file" name="leftLogo" accept="image/*" className="glass-input text-gray-400 file:text-[#D4AF37] file:bg-transparent file:border-0" />
-                                    <p className="text-xs text-gray-500 mt-2">Recommended: Square PNG/SVG with transparency.</p>
                                 </div>
                             </div>
                         </div>
