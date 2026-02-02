@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getDisplayData } from "./actions";
 import { socket } from "@/lib/socketClient";
 import { AutoScrollList } from "@/components/display/AutoScrollList";
@@ -435,12 +435,7 @@ function VideoPlayer({ sources }: { sources: any[] }) {
 
 function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
     const videoId = url.match(/embed\/([^?]+)/)?.[1] || url.match(/[?&]v=([^&]+)/)?.[1];
-    const [containerId, setContainerId] = useState<string>("");
-
-    useEffect(() => {
-        // Generate ID only on client side to avoid hydration mismatch
-        setContainerId(`youtube-player-${Math.random().toString(36).substr(2, 9)}`);
-    }, []);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!videoId) return;
@@ -466,7 +461,16 @@ function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
         };
 
         const initPlayer = () => {
-            player = new (window as any).YT.Player(containerId, {
+            // Need to target the element provided by ref
+            // Note: YT.Player replaces the target element with an Iframe.
+            // We must create a child div to be replaced, so the ref container stays intact.
+            if (!containerRef.current) return;
+
+            // Create a disposable div for YouTube to replace
+            const placeholder = document.createElement('div');
+            containerRef.current.appendChild(placeholder);
+
+            player = new (window as any).YT.Player(placeholder, {
                 height: '100%',
                 width: '100%',
                 videoId: videoId,
@@ -505,13 +509,25 @@ function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
                     console.error("Error destroying YT player", e);
                 }
             }
+            // Ensure container is clean (though React handles the container itself)
+            if (containerRef.current) {
+                containerRef.current.innerHTML = '';
+            }
         };
-    }, [videoId, onEnded, containerId]);
+    }, [videoId, onEnded]); // Removed containerId dependency
 
     if (!videoId) return <div className="w-full h-full flex items-center justify-center text-red-500 text-xs">Invalid YouTube URL</div>;
 
     return (
-        <div id={containerId} className="w-full h-full" />
+        <div className="w-full h-full">
+            {/* 
+                Wrapper strategy: 
+                React controls this outer div (via ref). 
+                We manually append a child for YouTube to replace/destroy.
+                This keeps React's Virtual DOM in sync with the real DOM structure it expects.
+            */}
+            <div ref={containerRef} className="w-full h-full" />
+        </div>
     );
 }
 
