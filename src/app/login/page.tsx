@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { authenticate } from "./actions";
 import { Button, Input } from "@/components/ui/components";
 import { Lock, User, ArrowRight } from "lucide-react";
@@ -10,6 +10,25 @@ export default function LoginPage() {
         authenticate,
         undefined,
     );
+
+    const [location, setLocation] = useState<{ lat: string, lng: string } | null>(null);
+
+    useEffect(() => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setLocation({
+                        lat: position.coords.latitude.toString(),
+                        lng: position.coords.longitude.toString()
+                    });
+                },
+                (error) => {
+                    console.log("Geolocation error:", error);
+                    // Fail silently, fallback to IP
+                }
+            );
+        }
+    }, []);
 
     return (
         <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black p-6 md:p-12">
@@ -35,6 +54,8 @@ export default function LoginPage() {
                 </div>
 
                 <form action={dispatch} className="space-y-8 animate-fade-in-up animate-delay-300">
+                    <input type="hidden" name="latitude" value={location?.lat || ""} />
+                    <input type="hidden" name="longitude" value={location?.lng || ""} />
                     <div className="space-y-6">
                         <div className="group space-y-2">
                             <label className="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37] ml-1">

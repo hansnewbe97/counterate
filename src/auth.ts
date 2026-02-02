@@ -57,7 +57,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             data: { sessionVersion: { increment: 1 } }
                         });
 
-                        await logActivity(user.id, "LOGIN", "User logged in via credentials");
+                        // Handle Geolocation if provided
+                        let deviceLocation = "";
+                        if (credentials.latitude && credentials.longitude) {
+                            try {
+                                const lat = credentials.latitude as string;
+                                const lon = credentials.longitude as string;
+                                // Use Agent header as required by OSM usage policy
+                                const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`, {
+                                    headers: { 'User-Agent': 'CounterateApp/1.0' }
+                                });
+                                if (geoRes.ok) {
+                                    const geoData = await geoRes.json();
+                                    const addr = geoData.address;
+                                    // Construct location string: e.g. "Jember, East Java"
+                                    const city = addr.city || addr.town || addr.village || addr.county || "Unknown City";
+                                    const state = addr.state || addr.region || "";
+                                    deviceLocation = state ? `${city}, ${state}` : city;
+                                    console.log("Device Location Resolved:", deviceLocation);
+                                }
+                            } catch (error) {
+                                console.error("Geocoding failed:", error);
+                            }
+                        }
+
+                        await logActivity(user.id, "LOGIN", "User logged in via credentials", deviceLocation);
 
                         return {
                             id: user.id,
