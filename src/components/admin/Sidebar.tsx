@@ -24,12 +24,22 @@ export function Sidebar({ role: initialRole }: { role?: string }) {
     const [isOpen, setIsOpen] = useState(false);
 
     // Auto-logout if session is expired (single session enforcement)
-    // Cast session to any to check for custom error property added in auth.ts
-    const sessionError = (session as any)?.error;
+    useEffect(() => {
+        // Debug polling
+        console.log(`[🔍 Sidebar] Session Polling:`, {
+            status,
+            hasSession: !!session,
+            error: (session as any)?.error,
+            timestamp: new Date().toISOString()
+        });
 
-    if (sessionError === "SessionExpired") {
-        signOut({ callbackUrl: "/login" });
-    }
+        const sessionError = (session as any)?.error;
+
+        if (sessionError === "SessionExpired" || status === "unauthenticated") {
+            console.log("[🔍 Sidebar] Triggering Force Logout...");
+            signOut({ callbackUrl: "/login" });
+        }
+    }, [session, status]);
 
     return (
         <>
