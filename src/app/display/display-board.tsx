@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { getDisplayData } from "./actions";
 import { socket } from "@/lib/socketClient";
 import { AutoScrollList } from "@/components/display/AutoScrollList";
@@ -96,11 +96,12 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
     const activeSources = useMemo(() => {
         return (video?.sources || []).filter((s: any) => s.url);
     }, [JSON.stringify(video?.sources)]);
-    const [videoIndex, setVideoIndex] = useState(0);
+    import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+    // ...
 
-    const handleVideoEnded = () => {
+    const handleVideoEnded = useCallback(() => {
         setVideoIndex((prev) => (prev + 1) % activeSources.length);
-    };
+    }, [activeSources.length]);
 
     return (
         <div className="relative flex h-full p-12 gap-12 bg-[#080808] text-gray-100 font-sans overflow-hidden selection:bg-[#D4AF37]/30">
@@ -445,7 +446,7 @@ function VideoPlayer({ sources, currentIndex, onEnded }: { sources: any[], curre
 
             {/* Overlay Info - Always visible for verification */}
             <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded border border-white/10 text-[9px] font-bold text-[#D4AF37] opacity-80 z-50">
-                CAM {currentIndex + 1} / {sources.length}
+                v2.1 • CAM {currentIndex + 1} / {sources.length}
             </div>
         </div>
     );
@@ -550,11 +551,13 @@ function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
 }
 
 function NativeVideo({ url, onEnded }: { url: string, onEnded: () => void }) {
-    const videoRef = (el: HTMLVideoElement | null) => {
-        if (el) {
-            el.play().catch(err => console.log("Autoplay prevented:", err));
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.play().catch(err => console.log("Autoplay prevented:", err));
         }
-    };
+    }, [url]);
 
     return (
         <video
