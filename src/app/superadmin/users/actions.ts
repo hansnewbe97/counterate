@@ -55,7 +55,12 @@ export async function createUser(
     const hashedDisplayPassword = await bcrypt.hash(finalDisplayPassword, 10);
 
     if (role === "ADMIN") {
-        const finalDisplayUsername = displayUsername || `display_${username}`;
+        let defaultDisplayUsername = `display_${username}`;
+        const digits = username.match(/\d+/);
+        if (digits) {
+            defaultDisplayUsername = digits[0];
+        }
+        const finalDisplayUsername = displayUsername || defaultDisplayUsername;
 
         const admin = await prisma.user.create({
             data: {
