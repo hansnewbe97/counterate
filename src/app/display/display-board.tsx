@@ -432,13 +432,13 @@ function VideoPlayer({ sources, currentIndex, onEnded }: { sources: any[], curre
                 <YouTubeEmbed
                     key={`yt-${currentIndex}`} // Force remount on change
                     url={currentUrl}
-                    onEnded={handleEnded}
+                    onEnded={onEnded}
                 />
             ) : (
                 <NativeVideo
                     key={`native-${currentIndex}`} // Force remount on change
                     url={currentUrl}
-                    onEnded={handleEnded}
+                    onEnded={onEnded}
                 />
             )}
 
