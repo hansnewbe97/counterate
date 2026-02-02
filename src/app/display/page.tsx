@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import DisplayBoard from "./display-board";
 import { DisplayClientListener } from "@/components/DisplayClientListener";
 

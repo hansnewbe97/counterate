@@ -99,37 +99,39 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
             <div className="absolute top-0 left-0 right-0 px-6 py-4 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
                 {/* Logo Section - Top & Center Aligned relative to text */}
                 <div className="flex flex-col animate-fade-in-down">
-                    <div className="flex flex-row items-center gap-4"> {/* Horizontal Layout */}
-                        {(() => {
-                            console.log(`[🔍 Logo Render] config:`, config);
-                            console.log(`[🔍 Logo Render] leftLogoUrl:`, config?.leftLogoUrl);
-                            return null;
-                        })()}
-                        {config?.leftLogoUrl ? (
-                            // mix-blend-screen removes black background
-                            // h-12 matches text size closer
-                            <img
-                                src={config.leftLogoUrl}
-                                alt="Logo"
-                                className="h-14 w-auto object-contain mix-blend-screen"
-                            />
-                        ) : (
-                            <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#8C7321] text-black rounded-lg flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.4)]">
-                                <span className="font-serif font-bold text-3xl">J</span>
-                            </div>
-                        )}
+                    {/* Logo Section - Vertical Stack (Strict Redesign) */}
+                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-2 gap-1">
+                        {/* Logo: Top, Centered, White Solid, No Background */}
+                        <div className="flex items-center justify-start">
+                            {config?.leftLogoUrl ? (
+                                <img
+                                    src={config.leftLogoUrl}
+                                    alt="Logo"
+                                    // mix-blend-screen: Removes black box
+                                    // grayscale brightness-200: Forces non-white colors to look White Solid
+                                    className="h-20 w-auto object-contain mix-blend-screen grayscale brightness-200"
+                                />
+                            ) : (
+                                <div className="h-16 w-16 bg-[#D4AF37] text-black rounded flex items-center justify-center">
+                                    <span className="font-bold text-3xl">J</span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Text: Bottom, Centered, Split Colors (White/Gold Solid) */}
                         <div>
-                            {/* Logic: First word White, Rest Gold */}
                             {(() => {
                                 const title = config?.leftTitle || "Jatim Prioritas";
                                 const parts = title.split(' ');
-                                const firstWord = parts[0];
-                                const rest = parts.slice(1).join(' ');
+                                const firstWord = parts[0] || "JATIM";
+                                const rest = parts.slice(1).join(' ') || "PRIORITAS";
 
                                 return (
-                                    <h1 className="text-3xl font-serif font-bold tracking-wider uppercase leading-none drop-shadow-sm flex gap-2">
-                                        <span className="text-white">{firstWord}</span>
-                                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#F7E7CE] to-[#D4AF37]">{rest}</span>
+                                    <h1 className="text-3xl font-bold tracking-widest uppercase leading-none flex gap-2 items-center justify-center">
+                                        {/* JATIM: Solid White */}
+                                        <span className="text-white font-sans">{firstWord}</span>
+                                        {/* PRIORITAS: Solid Gold #D4AF37 (No Gradient) */}
+                                        <span className="text-[#D4AF37] font-sans">{rest}</span>
                                     </h1>
                                 );
                             })()}
