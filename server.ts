@@ -48,6 +48,20 @@ app.prepare().then(() => {
     socket.on("error", (error) => {
       console.error(`[Socket.IO] Socket error for ${socket.id}:`, error);
     });
+
+    // Forwarding events from Admin to Displays
+    socket.on("admin-update", () => {
+      console.log(`[Socket.IO] Received admin-update, broadcasting data-update`);
+      io.emit("data-update");
+    });
+
+    socket.on("force-reload", ({ targetId }) => {
+      io.emit("force-reload", { targetId });
+    });
+
+    socket.on("force-logout", ({ targetId }) => {
+      io.emit("force-logout", { targetId });
+    });
   });
 
   // Make io accessible globally for API routes to emit events

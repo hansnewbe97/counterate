@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Save, Monitor, Upload, CheckCircle, XCircle } from "lucide-react";
 
+import { socket } from "@/lib/socketClient";
+
 export default function BrandingPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -48,6 +50,10 @@ export default function BrandingPage() {
             const result = await updateBrandingConfig(formData);
             if (result.success) {
                 setMessage({ type: 'success', text: 'Branding berhasil disimpan!' });
+
+                // Emit event to update displays immediately
+                socket.emit("admin-update");
+
                 await loadConfig();
                 setSelectedLogo(null);
                 setLogoPreview(null);
@@ -84,8 +90,8 @@ export default function BrandingPage() {
             {/* Success/Error Message */}
             {message && (
                 <div className={`p-4 rounded-xl border flex items-center gap-3 animate-fade-in-up ${message.type === 'success'
-                        ? 'bg-green-900/20 border-green-500/30 text-green-400'
-                        : 'bg-red-900/20 border-red-500/30 text-red-400'
+                    ? 'bg-green-900/20 border-green-500/30 text-green-400'
+                    : 'bg-red-900/20 border-red-500/30 text-red-400'
                     }`}>
                     {message.type === 'success' ? <CheckCircle size={20} /> : <XCircle size={20} />}
                     <span className="font-medium">{message.text}</span>
