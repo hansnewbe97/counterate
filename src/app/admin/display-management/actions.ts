@@ -187,3 +187,35 @@ export async function resetDisplayPassword(displayId: string, newPass: string) {
         return { success: false, error: "Failed to update password" };
     }
 }
+
+export async function renameDisplayUser(displayId: string, newUsername: string) {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    // Basic validation
+    if (!newUsername || newUsername.length < 3) {
+        return { success: false, error: "Username must be at least 3 characters" };
+    }
+
+    // Check for spaces or special chars if strict
+    // const validUsername = /^[a-zA-Z0-9_-]+$/.test(newUsername);
+    // if (!validUsername) return { success: false, error: "Username contains invalid characters" };
+
+    try {
+        // Check if username taken
+        const existing = await prisma.user.findUnique({ where: { username: newUsername } });
+        if (existing && existing.id !== displayId) {
+            return { success: false, error: "Username is already taken" };
+        }
+
+        await prisma.user.update({
+            where: { id: displayId },
+            data: { username: newUsername }
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Rename error:", error);
+        return { success: false, error: "Failed to rename display unit" };
+    }
+}
