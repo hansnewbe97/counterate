@@ -1,6 +1,8 @@
 import { Sidebar } from "@/components/admin/Sidebar";
 import { auth } from "@/auth";
 
+import { redirect } from "next/navigation";
+
 export default async function AdminLayout({
     children,
 }: {
@@ -9,8 +11,18 @@ export default async function AdminLayout({
     let session = null;
     try {
         session = await auth();
+        // Check for session expiry error from auth.ts
+        if (!session || (session as any).error === "SessionExpired") {
+            redirect("/login");
+        }
     } catch (e) {
+        // If redirect throws (which it does in Next.js), let it bubble up
+        if ((e as any)?.digest?.includes("NEXT_REDIRECT")) {
+            throw e;
+        }
         console.error("Auth check failed in admin layout:", e);
+        // Fail safe redirect on error
+        redirect("/login");
     }
 
     return (

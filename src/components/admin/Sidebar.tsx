@@ -23,6 +23,14 @@ export function Sidebar({ role: initialRole }: { role?: string }) {
 
     const [isOpen, setIsOpen] = useState(false);
 
+    // Auto-logout if session is expired (single session enforcement)
+    // Cast session to any to check for custom error property added in auth.ts
+    const sessionError = (session as any)?.error;
+
+    if (sessionError === "SessionExpired") {
+        signOut({ callbackUrl: "/login" });
+    }
+
     return (
         <>
             {/* Mobile Header (Premium Glassmorphism) */}
