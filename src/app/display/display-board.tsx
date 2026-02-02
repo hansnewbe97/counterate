@@ -115,7 +115,7 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                 {/* Logo Section - Top & Center Aligned relative to text */}
                 <div className="flex flex-col animate-fade-in-down">
                     {/* Logo Section - Vertical Stack (Strict Redesign) */}
-                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-2 gap-1">
+                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-2 gap-4">
                         {/* Logo: Top, Centered, White Solid, No Background */}
                         <div className="flex items-center justify-start">
                             {config?.leftLogoUrl ? (
@@ -124,11 +124,11 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                     alt="Logo"
                                     // mix-blend-screen: Removes black box
                                     // grayscale brightness-200: Forces non-white colors to look White Solid
-                                    className="h-20 w-auto object-contain mix-blend-screen grayscale brightness-200"
+                                    className="h-24 w-auto object-contain mix-blend-screen grayscale brightness-200"
                                 />
                             ) : (
-                                <div className="h-16 w-16 bg-[#D4AF37] text-black rounded flex items-center justify-center">
-                                    <span className="font-bold text-3xl">J</span>
+                                <div className="h-20 w-20 bg-[#D4AF37] text-black rounded flex items-center justify-center">
+                                    <span className="font-bold text-4xl">J</span>
                                 </div>
                             )}
                         </div>
@@ -142,7 +142,7 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                 const rest = parts.slice(1).join(' ') || "PRIORITAS";
 
                                 return (
-                                    <h1 className="text-3xl font-bold tracking-widest uppercase leading-none flex gap-2 items-center justify-center">
+                                    <h1 className="text-5xl font-bold tracking-widest uppercase leading-none flex gap-3 items-center justify-start">
                                         {/* JATIM: Solid White */}
                                         <span className="text-white font-sans">{firstWord}</span>
                                         {/* PRIORITAS: Solid Gold #D4AF37 (No Gradient) */}
