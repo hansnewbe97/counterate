@@ -25,22 +25,13 @@ export function Sidebar({ role: initialRole }: { role?: string }) {
 
     // Auto-logout if session is expired (single session enforcement)
     useEffect(() => {
-        // Debug polling
-        console.log(`[🔍 Sidebar] Session Polling:`, {
-            status,
-            hasSession: !!session,
-            error: (session as any)?.error,
-            timestamp: new Date().toISOString()
-        });
-
         const sessionError = (session as any)?.error;
 
-        // Removed status === "unauthenticated" check to prevent race condition loop
         if (sessionError === "SessionExpired") {
-            console.log("[🔍 Sidebar] Triggering Force Logout...");
+            // Removed logs
             signOut({ callbackUrl: "/login" });
         }
-    }, [session, status]);
+    }, [session]);
 
     // Check session on navigation
     // This runs whenever pathname changes (user clicks a menu)
