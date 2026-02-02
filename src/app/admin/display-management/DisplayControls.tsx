@@ -2,8 +2,8 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Monitor, RefreshCcw, LogOut, Lock, CheckCircle, AlertTriangle, X, Edit } from 'lucide-react';
-import { forceReloadDisplay, forceLogoutDisplay, resetToDefaultPassword, resetDisplayPassword, renameDisplayUser } from './actions';
+import { Monitor, RefreshCcw, LogOut, Lock, CheckCircle, AlertTriangle, X } from 'lucide-react';
+import { forceReloadDisplay, forceLogoutDisplay, resetToDefaultPassword, resetDisplayPassword } from './actions';
 
 interface DisplayControlsProps {
     displayUser: any;
@@ -12,9 +12,7 @@ interface DisplayControlsProps {
 export default function DisplayControls({ displayUser }: DisplayControlsProps) {
     const [isPending, startTransition] = useTransition();
     const [showPasswordForm, setShowPasswordForm] = useState(false);
-    const [showRenameForm, setShowRenameForm] = useState(false);
     const [newPassword, setNewPassword] = useState('');
-    const [newUsername, setNewUsername] = useState('');
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
     const [confirmModal, setConfirmModal] = useState<{
         isOpen: boolean;
@@ -67,20 +65,7 @@ export default function DisplayControls({ displayUser }: DisplayControlsProps) {
         });
     };
 
-    const handleRename = async (e: React.FormEvent) => {
-        e.preventDefault();
-        startTransition(async () => {
-            const result = await renameDisplayUser(displayUser.id, newUsername);
-            if (result.success) {
-                setFeedback({ type: 'success', message: 'Display renamed successfully. Refreshing...' });
-                setShowRenameForm(false);
-                setTimeout(() => window.location.reload(), 1000); // Reload to reflect changes
-            } else {
-                setFeedback({ type: 'error', message: result.error || 'Failed to rename display' });
-            }
-            setTimeout(() => setFeedback(null), 3000);
-        });
-    };
+
 
     return (
         <div className="mt-8 space-y-4">
@@ -111,7 +96,7 @@ export default function DisplayControls({ displayUser }: DisplayControlsProps) {
                 </button>
 
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {!showPasswordForm && !showRenameForm ? (
+                    {!showPasswordForm ? (
                         <>
                             <button
                                 onClick={() => handleAction('Reset to Default Password', resetToDefaultPassword)}
@@ -129,19 +114,9 @@ export default function DisplayControls({ displayUser }: DisplayControlsProps) {
                                 <Lock size={18} className="text-blue-400" />
                                 <span className="font-medium text-blue-400">Set New Password</span>
                             </button>
-                            <button
-                                onClick={() => {
-                                    setNewUsername(displayUser.username);
-                                    setShowRenameForm(true);
-                                }}
-                                disabled={isPending}
-                                className="md:col-span-2 flex items-center justify-center gap-3 p-4 rounded-xl bg-[#222] hover:bg-purple-500/10 transition-colors group/btn border border-white/5 border-purple-500/20"
-                            >
-                                <Edit size={18} className="text-purple-400" />
-                                <span className="font-medium text-purple-400">Rename Display Unit</span>
-                            </button>
+
                         </>
-                    ) : showPasswordForm ? (
+                    ) : (
                         <form onSubmit={handlePasswordReset} className="md:col-span-2 bg-[#1a1a1a] p-4 rounded-xl border border-blue-500/20 animate-fade-in-up">
                             <div className="flex justify-between items-center mb-4">
                                 <h4 className="text-sm font-bold text-blue-400 uppercase tracking-wider">Set New Password</h4>
@@ -163,33 +138,6 @@ export default function DisplayControls({ displayUser }: DisplayControlsProps) {
                                     type="submit"
                                     disabled={isPending}
                                     className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-6 py-2 rounded-lg font-medium transition-colors border border-blue-500/20"
-                                >
-                                    {isPending ? 'Saving...' : 'Save'}
-                                </button>
-                            </div>
-                        </form>
-                    ) : (
-                        <form onSubmit={handleRename} className="md:col-span-2 bg-[#1a1a1a] p-4 rounded-xl border border-purple-500/20 animate-fade-in-up">
-                            <div className="flex justify-between items-center mb-4">
-                                <h4 className="text-sm font-bold text-purple-400 uppercase tracking-wider">Rename Display Unit</h4>
-                                <button type="button" onClick={() => setShowRenameForm(false)} className="text-gray-500 hover:text-white">
-                                    <X size={18} />
-                                </button>
-                            </div>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    value={newUsername}
-                                    onChange={(e) => setNewUsername(e.target.value)}
-                                    placeholder="Enter new username (e.g. 002)..."
-                                    className="flex-1 bg-[#111] border border-[#333] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500 transition-colors"
-                                    required
-                                    minLength={2}
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={isPending}
-                                    className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 px-6 py-2 rounded-lg font-medium transition-colors border border-purple-500/20"
                                 >
                                     {isPending ? 'Saving...' : 'Save'}
                                 </button>
