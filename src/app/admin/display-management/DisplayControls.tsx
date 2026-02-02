@@ -124,22 +124,22 @@ export default function DisplayControls({ displayUser }: DisplayControlsProps) {
                                     <X size={18} />
                                 </button>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-3">
                                 <input
                                     type="text"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder="Enter new password..."
-                                    className="flex-1 bg-[#111] border border-[#333] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                    className="w-full sm:flex-1 bg-[#111] border border-[#333] rounded-lg px-4 py-3 sm:py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors text-sm sm:text-base"
                                     required
                                     minLength={4}
                                 />
                                 <button
                                     type="submit"
                                     disabled={isPending}
-                                    className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-6 py-2 rounded-lg font-medium transition-colors border border-blue-500/20"
+                                    className="w-full sm:w-auto bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-6 py-3 sm:py-2 rounded-lg font-medium transition-colors border border-blue-500/20 whitespace-nowrap"
                                 >
-                                    {isPending ? 'Saving...' : 'Save'}
+                                    {isPending ? 'Saving...' : 'Save Password'}
                                 </button>
                             </div>
                         </form>
