@@ -9,6 +9,7 @@ export default async function UsersPage() {
     let debugTotalUsers = 0;
     let debugAdminUsers = 0;
     let debugError = null;
+    let debugDump = "";
 
     try {
         // BYPASS getUsers() completely - direct database query
@@ -24,6 +25,7 @@ export default async function UsersPage() {
 
         debugTotalUsers = allUsers.length;
         debugAdminUsers = adminUsers.length;
+        debugDump = allUsers.map((u: any) => `${u.username} [${u.role}]`).join(', ');
 
         console.log(`[UsersPage DIRECT] Total: ${allUsers.length}, Admins: ${adminUsers.length}`);
 
@@ -54,7 +56,7 @@ export default async function UsersPage() {
                         <div className="col-span-2 mt-2 border-t border-red-500/30 pt-2">
                             <p className="font-bold text-xs mb-1">DB Dump:</p>
                             <div className="text-xs font-mono break-all">
-                                {allUsers.map((u: any) => `${u.username} [${u.role}]`).join(', ')}
+                                {debugDump}
                             </div>
                         </div>
                         <div className="col-span-2 text-xs text-slate-400 mt-1">Timestamp: {new Date().toISOString()}</div>
