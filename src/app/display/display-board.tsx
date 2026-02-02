@@ -210,14 +210,12 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                     )}
                 </div>
 
-                {/* Clock Section - Clean & Elegant */}
-                <div className="text-right animate-fade-in-down w-[30%]">
-                    <Clock />
-                </div>
+                {/* Clock Section - Global - Moved to Body */}
+                <div className="w-[30%]"></div>
             </div>
 
             {/* Main Content Grid */}
-            <div className="relative w-full h-full flex gap-8 pt-28 z-10 pb-8">
+            <div className="relative w-full h-full flex gap-8 pt-24 z-10 pb-8">
 
                 {/* Left Column: Market Quotations */}
                 <div className="w-1/2 flex flex-col h-full animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -297,8 +295,21 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                     </div>
                 </div>
 
-                {/* Right Column: Video & Deposits */}
-                <div className="w-1/2 flex flex-col gap-8 h-full animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                {/* Right Column: Video & Promo */}
+                <div className="w-1/2 flex flex-col h-full gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                    {/* New Clock Position - Acts as Header for Right Column */}
+                    <div className="flex justify-between items-end pb-2 border-b-2 border-[#D4AF37]/50 mb-1">
+                        <div className="flex flex-col">
+                            <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-[0.2em] mb-1">Local Time</span>
+                            <div className="flex items-center gap-2 text-white/80 text-[10px] uppercase tracking-widest">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                System Operational
+                            </div>
+                        </div>
+                        <div className="transform origin-bottom-right scale-75">
+                            <Clock />
+                        </div>
+                    </div>
 
                     {/* Video Section - Fixed Height for Visibility */}
                     <div className="w-full shrink-0 aspect-video bg-black relative shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden rounded-sm group">
