@@ -123,11 +123,11 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
             </div>
 
             {/* Top Bar: Logo & Clock */}
-            <div className="absolute top-0 left-0 right-0 px-6 py-4 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
+            <div className="absolute top-0 left-0 right-0 px-6 py-3 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
                 {/* Logo Section - Top & Center Aligned relative to text */}
                 <div className="flex flex-col animate-fade-in-down">
                     {/* Logo Section - Vertical Stack (Strict Redesign) */}
-                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-2 gap-0">
+                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-1 gap-0">
                         {/* Logo: Top, Centered, White Solid, No Background */}
                         <div className="flex items-center justify-start">
                             {config?.leftLogoUrl ? (
@@ -136,11 +136,11 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                     alt="Logo"
                                     // mix-blend-screen: Removes black box
                                     // grayscale brightness-200: Forces non-white colors to look White Solid
-                                    className="h-24 w-auto object-contain mix-blend-screen grayscale brightness-200"
+                                    className="h-16 w-auto object-contain mix-blend-screen grayscale brightness-200"
                                 />
                             ) : (
-                                <div className="h-20 w-20 bg-[#D4AF37] text-black rounded flex items-center justify-center">
-                                    <span className="font-bold text-4xl">J</span>
+                                <div className="h-16 w-16 bg-[#D4AF37] text-black rounded flex items-center justify-center">
+                                    <span className="font-bold text-3xl">J</span>
                                 </div>
                             )}
                         </div>
@@ -154,7 +154,7 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                 const rest = parts.slice(1).join(' ') || "PRIORITAS";
 
                                 return (
-                                    <h1 className="text-2xl font-bold tracking-widest uppercase leading-none flex gap-3 items-center justify-start">
+                                    <h1 className="text-lg font-bold tracking-widest uppercase leading-none flex gap-2 items-center justify-start mt-1">
                                         {/* JATIM: Solid White */}
                                         <span className="text-white font-sans">{firstWord}</span>
                                         {/* PRIORITAS: Solid Gold #D4AF37 (No Gradient) */}
@@ -217,7 +217,7 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
             </div>
 
             {/* Main Content Grid */}
-            <div className="relative w-full h-full flex gap-8 pt-36 z-10 pb-8">
+            <div className="relative w-full h-full flex gap-8 pt-28 z-10 pb-8">
 
                 {/* Left Column: Market Quotations */}
                 <div className="w-1/2 flex flex-col h-full animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -272,19 +272,23 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                         </div>
 
                                         {/* TT Rates */}
-                                        <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
-                                            {formatCurrency(rate.ttBuy)}
+                                        <div className="col-span-2 flex justify-between items-center px-1 font-semibold text-white tabular-nums text-sm">
+                                            <span className="text-white/40 text-[10px] mr-1">Rp</span>
+                                            <span>{Number(rate.ttBuy).toLocaleString('id-ID')}</span>
                                         </div>
-                                        <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
-                                            {formatCurrency(rate.ttSell)}
+                                        <div className="col-span-2 flex justify-between items-center px-1 font-semibold text-white tabular-nums text-sm">
+                                            <span className="text-white/40 text-[10px] mr-1">Rp</span>
+                                            <span>{Number(rate.ttSell).toLocaleString('id-ID')}</span>
                                         </div>
 
                                         {/* Bank Rates */}
-                                        <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
-                                            {formatCurrency(rate.bankBuy)}
+                                        <div className="col-span-2 flex justify-between items-center px-1 font-semibold text-[#D4AF37] tabular-nums text-sm">
+                                            <span className="text-[#D4AF37]/40 text-[10px] mr-1">Rp</span>
+                                            <span>{Number(rate.bankBuy).toLocaleString('id-ID')}</span>
                                         </div>
-                                        <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
-                                            {formatCurrency(rate.bankSell)}
+                                        <div className="col-span-2 flex justify-between items-center px-1 font-semibold text-[#D4AF37] tabular-nums text-sm">
+                                            <span className="text-[#D4AF37]/40 text-[10px] mr-1">Rp</span>
+                                            <span>{Number(rate.bankSell).toLocaleString('id-ID')}</span>
                                         </div>
                                     </div>
                                 )}
