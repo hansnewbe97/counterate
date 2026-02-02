@@ -51,6 +51,12 @@ export default async function UsersPage() {
                         <div>Total Users in DB: <span className="font-bold">{debugTotalUsers}</span></div>
                         <div>Admin Users found: <span className="font-bold">{debugAdminUsers}</span></div>
                         <div className="col-span-2">Error: <span className="text-red-300">{debugError || "None"}</span></div>
+                        <div className="col-span-2 mt-2 border-t border-red-500/30 pt-2">
+                            <p className="font-bold text-xs mb-1">DB Dump:</p>
+                            <div className="text-xs font-mono break-all">
+                                {allUsers.map((u: any) => `${u.username} [${u.role}]`).join(', ')}
+                            </div>
+                        </div>
                         <div className="col-span-2 text-xs text-slate-400 mt-1">Timestamp: {new Date().toISOString()}</div>
                     </div>
                 </div>
