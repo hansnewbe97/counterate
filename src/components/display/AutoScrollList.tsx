@@ -23,7 +23,6 @@ export function AutoScrollList<T extends { id?: string }>({
 
     return (
         <div
-            ref={containerRef}
             className={`overflow-hidden relative ${className}`}
             style={{ height: '100%' }}
         >
