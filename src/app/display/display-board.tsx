@@ -142,7 +142,7 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                 const rest = parts.slice(1).join(' ') || "PRIORITAS";
 
                                 return (
-                                    <h1 className="text-4xl font-bold tracking-widest uppercase leading-none flex gap-3 items-center justify-start">
+                                    <h1 className="text-2xl font-bold tracking-widest uppercase leading-none flex gap-3 items-center justify-start">
                                         {/* JATIM: Solid White */}
                                         <span className="text-white font-sans">{firstWord}</span>
                                         {/* PRIORITAS: Solid Gold #D4AF37 (No Gradient) */}
@@ -205,7 +205,7 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
             </div>
 
             {/* Main Content Grid */}
-            <div className="relative w-full h-full flex gap-8 pt-56 z-10 pb-8">
+            <div className="relative w-full h-full flex gap-8 pt-36 z-10 pb-8">
 
                 {/* Left Column: Market Quotations */}
                 <div className="w-1/2 flex flex-col h-full animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
