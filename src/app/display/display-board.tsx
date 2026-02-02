@@ -181,9 +181,9 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                         <div className="grid grid-cols-12 px-4 py-3 text-[#888] text-xs font-bold uppercase tracking-[0.15em] border-b border-white/[0.08]">
                             <div className="col-span-1"></div>
                             <div className="col-span-1"></div>
-                            <div className="col-span-2">Currency</div>
-                            <div className="col-span-4 text-right pr-4 text-[#D4AF37]">Telegraphic Transfer</div>
-                            <div className="col-span-4 text-right pr-4">Bank Notes</div>
+                            <div className="col-span-2 -ml-2">Currency</div>
+                            <div className="col-span-4 text-center text-[#D4AF37]">Telegraphic Transfer</div>
+                            <div className="col-span-4 text-center">Bank Notes</div>
                         </div>
                         <div className="grid grid-cols-12 px-4 py-1.5 text-[#555] text-[10px] font-bold uppercase tracking-widest mb-1">
                             <div className="col-span-4 text-right"></div>
