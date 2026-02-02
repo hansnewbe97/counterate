@@ -392,6 +392,7 @@ function VideoPlayer({ sources }: { sources: any[] }) {
 
 function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
     const videoId = url.match(/embed\/([^?]+)/)?.[1] || url.match(/[?&]v=([^&]+)/)?.[1];
+    const [containerId] = useState(() => `youtube-player-${Math.random().toString(36).substr(2, 9)}`);
 
     useEffect(() => {
         if (!videoId) return;
@@ -417,13 +418,7 @@ function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
         };
 
         const initPlayer = () => {
-            // Destroy existing player if any exists in this container
-            const existingFrame = document.getElementById(`youtube-player-frame`);
-            if (existingFrame && existingFrame.tagName === 'IFRAME') {
-                // If it's already an iframe, the API might try to wrap it again or fail if ID is same
-            }
-
-            player = new (window as any).YT.Player(`youtube-player-container`, {
+            player = new (window as any).YT.Player(containerId, {
                 height: '100%',
                 width: '100%',
                 videoId: videoId,
@@ -447,9 +442,6 @@ function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
         if ((window as any).YT && (window as any).YT.Player) {
             initPlayer();
         } else {
-            // If API is loading, we push our init to the queue usually handled by onYouTubeIframeAPIReady
-            // But since that global might be overwritten, we apppend/hook carefully.
-            // Simplified: We assume standard Google implementation which calls window.onYouTubeIframeAPIReady
             const previousReady = (window as any).onYouTubeIframeAPIReady;
             (window as any).onYouTubeIframeAPIReady = () => {
                 if (previousReady) previousReady();
@@ -466,12 +458,12 @@ function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
                 }
             }
         };
-    }, [videoId, onEnded]);
+    }, [videoId, onEnded, containerId]);
 
     if (!videoId) return <div className="w-full h-full flex items-center justify-center text-red-500 text-xs">Invalid YouTube URL</div>;
 
     return (
-        <div id="youtube-player-container" className="w-full h-full" />
+        <div id={containerId} className="w-full h-full" />
     );
 }
 
