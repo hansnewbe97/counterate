@@ -215,7 +215,7 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
             </div>
 
             {/* Main Content Grid */}
-            <div className="relative w-full h-full flex gap-8 pt-24 z-10 pb-8">
+            <div className="relative w-full h-full flex gap-8 pt-16 z-10 pb-4">
 
                 {/* Left Column: Market Quotations */}
                 <div className="w-1/2 flex flex-col h-full animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
