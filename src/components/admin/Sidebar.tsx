@@ -35,11 +35,30 @@ export function Sidebar({ role: initialRole }: { role?: string }) {
 
         const sessionError = (session as any)?.error;
 
-        if (sessionError === "SessionExpired" || status === "unauthenticated") {
+        // Removed status === "unauthenticated" check to prevent race condition loop
+        if (sessionError === "SessionExpired") {
             console.log("[🔍 Sidebar] Triggering Force Logout...");
             signOut({ callbackUrl: "/login" });
         }
     }, [session, status]);
+
+    // Check session on navigation
+    // This runs whenever pathname changes (user clicks a menu)
+    useEffect(() => {
+        const checkSession = async () => {
+            // Import dynamically to avoid build issues if mixed environments,
+            // but here it's fine. We use the server action.
+            const { verifySession } = await import("@/app/admin/actions");
+            const isValid = await verifySession();
+
+            if (!isValid) {
+                console.log("[🔍 Sidebar] Navigation Check: Session Invalid -> Logout");
+                signOut({ callbackUrl: "/login" });
+            }
+        };
+
+        checkSession();
+    }, [pathname]);
 
     return (
         <>
