@@ -443,8 +443,8 @@ function VideoPlayer({ sources, currentIndex, onEnded }: { sources: any[], curre
             )}
 
             {/* Overlay Info - Always visible for verification */}
-            <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded border border-white/10 text-[9px] font-bold text-[#D4AF37] opacity-60">
-                {currentIndex + 1} / {sources.length}
+            <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded border border-white/10 text-[9px] font-bold text-[#D4AF37] opacity-80 z-50">
+                CAM {currentIndex + 1} / {sources.length}
             </div>
         </div>
     );
