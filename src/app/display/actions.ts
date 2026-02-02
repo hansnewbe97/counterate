@@ -46,7 +46,12 @@ export async function getDisplayData() {
 
             const anyAdmin = await prisma.user.findFirst({
                 where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
-                include: { displayConfig: true, forexRates: true, depositRates: true, videoDisplay: true }
+                include: {
+                    displayConfig: true,
+                    forexRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                    depositRates: { where: { active: true }, orderBy: { order: 'asc' } },
+                    videoDisplay: { include: { sources: { orderBy: { order: 'asc' } } } }
+                }
             });
 
             if (anyAdmin) {
