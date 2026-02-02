@@ -122,51 +122,27 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                 <div className="absolute bottom-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-[radial-gradient(circle,rgba(201,166,78,0.05)_0%,transparent_70%)] pointer-events-none"></div>
             </div>
 
-            {/* Top Bar: Logo & Clock */}
-            <div className="absolute top-0 left-0 right-0 px-6 py-3 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
-                {/* Logo Section - Top & Center Aligned relative to text */}
-                <div className="flex flex-col animate-fade-in-down">
-                    {/* Logo Section - Vertical Stack (Strict Redesign) */}
-                    <div className="flex flex-col animate-fade-in-down items-left justify-center pt-1 gap-0">
-                        {/* Logo: Top, Centered, White Solid, No Background */}
-                        <div className="flex items-center justify-start">
-                            {config?.leftLogoUrl ? (
-                                <img
-                                    src={config.leftLogoUrl}
-                                    alt="Logo"
-                                    // mix-blend-screen: Removes black box
-                                    // grayscale brightness-200: Forces non-white colors to look White Solid
-                                    className="h-16 w-auto object-contain mix-blend-screen grayscale brightness-200"
-                                />
-                            ) : (
-                                <div className="h-16 w-16 bg-[#D4AF37] text-black rounded flex items-center justify-center">
-                                    <span className="font-bold text-3xl">J</span>
-                                </div>
-                            )}
-                        </div>
+            {/* Top Bar: Title & Logo */}
+            <div className="absolute top-0 left-0 right-0 px-8 py-5 flex justify-between items-start z-50 bg-gradient-to-b from-black/80 to-transparent">
 
-                        {/* Text: Bottom, Centered, Split Colors (White/Gold Solid) */}
-                        <div>
-                            {(() => {
-                                const title = config?.leftTitle || "Jatim Prioritas";
-                                const parts = title.split(' ');
-                                const firstWord = parts[0] || "JATIM";
-                                const rest = parts.slice(1).join(' ') || "PRIORITAS";
+                {/* Left: Jatim Prioritas Title (Enlarged & Raised) */}
+                <div className="flex flex-col animate-fade-in-down justify-start pt-1">
+                    {(() => {
+                        const title = config?.leftTitle || "Jatim Prioritas";
+                        const parts = title.split(' ');
+                        const firstWord = parts[0] || "JATIM";
+                        const rest = parts.slice(1).join(' ') || "PRIORITAS";
 
-                                return (
-                                    <h1 className="text-lg font-bold tracking-widest uppercase leading-none flex gap-2 items-center justify-start mt-1">
-                                        {/* JATIM: Solid White */}
-                                        <span className="text-white font-sans">{firstWord}</span>
-                                        {/* PRIORITAS: Solid Gold #D4AF37 (No Gradient) */}
-                                        <span className="text-[#D4AF37] font-sans">{rest}</span>
-                                    </h1>
-                                );
-                            })()}
-                        </div>
-                    </div>
+                        return (
+                            <h1 className="text-3xl font-bold tracking-[0.15em] uppercase leading-none flex gap-3 items-center drop-shadow-lg">
+                                {/* JATIM: Solid White */}
+                                <span className="text-white font-sans">{firstWord}</span>
+                                {/* PRIORITAS: Solid Gold #D4AF37 */}
+                                <span className="text-[#D4AF37] font-sans">{rest}</span>
+                            </h1>
+                        );
+                    })()}
                 </div>
-
-
 
                 {/* Ticker Section - Centered */}
                 <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[40%] flex items-center justify-center overflow-hidden z-40">
@@ -210,8 +186,22 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                     )}
                 </div>
 
-                {/* Clock Section - Global - Moved to Body */}
-                <div className="w-[30%]"></div>
+                {/* Right: Logo Section (Moved Here & Enlarged) */}
+                <div className="flex items-center justify-end animate-fade-in-down">
+                    {config?.leftLogoUrl ? (
+                        <img
+                            src={config.leftLogoUrl}
+                            alt="Logo"
+                            // mix-blend-screen: Removes black box
+                            // grayscale brightness-200: Forces non-white colors to look White Solid
+                            className="h-20 w-auto object-contain mix-blend-screen grayscale brightness-200"
+                        />
+                    ) : (
+                        <div className="h-20 w-20 bg-[#D4AF37] text-black rounded flex items-center justify-center">
+                            <span className="font-bold text-4xl">J</span>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Main Content Grid */}
