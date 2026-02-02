@@ -60,5 +60,6 @@ export async function setVideos(urls: string[]) {
 
     emitUpdate();
     revalidatePath("/admin/video");
+    revalidatePath("/display");
     return { success: true };
 }

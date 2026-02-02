@@ -60,8 +60,14 @@ export async function updateBrandingConfig(formData: FormData) {
             data: updateData
         });
 
-        revalidatePath("/display");
+        // Revalidate both admin and display pages
         revalidatePath("/admin/branding");
+        revalidatePath("/display");
+
+        // Emit socket event for real-time update
+        const io = (global as any).io;
+        if (io) io.emit("data-update", { type: "BRANDING" });
+
         return { success: true };
     } catch (error) {
         console.error("Failed to update branding:", error);
