@@ -178,14 +178,14 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                     {/* Table Container - Minimalist Glass */}
                     <div className="flex-1 flex flex-col bg-white/[0.02] border border-white/10 rounded-lg relative overflow-hidden">
                         {/* Table Headers */}
-                        <div className="grid grid-cols-12 px-4 py-3 text-[#888] text-[9px] font-bold uppercase tracking-[0.15em] border-b border-white/[0.08]">
+                        <div className="grid grid-cols-12 px-4 py-3 text-[#888] text-xs font-bold uppercase tracking-[0.15em] border-b border-white/[0.08]">
                             <div className="col-span-1"></div>
                             <div className="col-span-1"></div>
                             <div className="col-span-2">Currency</div>
                             <div className="col-span-4 text-right pr-4 text-[#D4AF37]">Telegraphic Transfer</div>
                             <div className="col-span-4 text-right pr-4">Bank Notes</div>
                         </div>
-                        <div className="grid grid-cols-12 px-4 py-1.5 text-[#555] text-[7px] font-bold uppercase tracking-widest mb-1">
+                        <div className="grid grid-cols-12 px-4 py-1.5 text-[#555] text-[10px] font-bold uppercase tracking-widest mb-1">
                             <div className="col-span-4 text-right"></div>
                             <div className="col-span-2 text-right text-[#D4AF37]/60">Buy</div>
                             <div className="col-span-2 text-right text-[#D4AF37]/60">Sell</div>
@@ -214,18 +214,18 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                         </div>
 
                                         {/* TT Rates */}
-                                        <div className="col-span-2 text-right text-lg font-semibold text-white tabular-nums">
+                                        <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
                                             {formatCurrency(rate.ttBuy)}
                                         </div>
-                                        <div className="col-span-2 text-right text-lg font-semibold text-white tabular-nums">
+                                        <div className="col-span-2 text-right text-base font-semibold text-white tabular-nums">
                                             {formatCurrency(rate.ttSell)}
                                         </div>
 
                                         {/* Bank Rates */}
-                                        <div className="col-span-2 text-right text-lg font-semibold text-[#D4AF37] tabular-nums">
+                                        <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
                                             {formatCurrency(rate.bankBuy)}
                                         </div>
-                                        <div className="col-span-2 text-right text-lg font-semibold text-[#D4AF37] tabular-nums">
+                                        <div className="col-span-2 text-right text-base font-semibold text-[#D4AF37] tabular-nums">
                                             {formatCurrency(rate.bankSell)}
                                         </div>
                                     </div>
