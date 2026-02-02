@@ -214,18 +214,18 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                         </div>
 
                                         {/* TT Rates */}
-                                        <div className="col-span-2 text-right text-base font-medium text-[#D4AF37] font-serif tracking-tight group-hover:text-white transition-colors">
+                                        <div className="col-span-2 text-right text-base font-medium text-white font-serif tracking-tight">
                                             {formatCurrency(rate.ttBuy)}
                                         </div>
-                                        <div className="col-span-2 text-right text-base font-medium text-[#D4AF37] font-serif tracking-tight group-hover:text-white transition-colors">
+                                        <div className="col-span-2 text-right text-base font-medium text-white font-serif tracking-tight">
                                             {formatCurrency(rate.ttSell)}
                                         </div>
 
                                         {/* Bank Rates */}
-                                        <div className="col-span-2 text-right text-base font-medium text-gray-400/80 font-serif tracking-tight group-hover:text-white/80 transition-colors">
+                                        <div className="col-span-2 text-right text-base font-medium text-[#D4AF37] font-serif tracking-tight">
                                             {formatCurrency(rate.bankBuy)}
                                         </div>
-                                        <div className="col-span-2 text-right text-base font-medium text-gray-400/80 font-serif tracking-tight group-hover:text-white/80 transition-colors">
+                                        <div className="col-span-2 text-right text-base font-medium text-[#D4AF37] font-serif tracking-tight">
                                             {formatCurrency(rate.bankSell)}
                                         </div>
                                     </div>
