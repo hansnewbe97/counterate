@@ -20,13 +20,10 @@ export default async function UsersPage() {
             orderBy: { username: "asc" }
         });
 
-        // Filter out SUPER_ADMIN, show everything else (ADMIN and DISPLAY)
-        // This ensures we see orphan displays too
-        const adminUsers = allUsers.filter((u: any) => u.role !== "SUPER_ADMIN" && u.role !== "ADMIN");
-        // Actually, the original logic expected ADMINs as the "Primary" unit.
-        // But the DB Dump shows only DISPLAY users. 
-        // Let's show ALL users (except self/superadmin) so we can debug/manage them.
-        const visibleUsers = allUsers.filter((u: any) => u.role !== "SUPER_ADMIN");
+        // Filter: Show ONLY 'ADMIN' users. 
+        // Display units (role 'DISPLAY') are secondary and should only appear attached to their Admin.
+        // This prevents "Double Entry" where the Display unit appears as a standalone row.
+        const visibleUsers = allUsers.filter((u: any) => u.role === "ADMIN");
 
         debugTotalUsers = allUsers.length;
         debugAdminUsers = visibleUsers.length;
