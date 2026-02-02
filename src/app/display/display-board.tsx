@@ -92,6 +92,15 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
 
     const { forex, deposit, video, config } = data;
 
+    // Calculate active sources here to manage state
+    const sources = video?.sources || [];
+    const activeSources = sources.filter((s: any) => s.url);
+    const [videoIndex, setVideoIndex] = useState(0);
+
+    const handleVideoEnded = () => {
+        setVideoIndex((prev) => (prev + 1) % activeSources.length);
+    };
+
     return (
         <div className="relative flex h-full p-12 gap-12 bg-[#080808] text-gray-100 font-sans overflow-hidden selection:bg-[#D4AF37]/30">
             {/* Ambient Background - Luxury Grid & Glow */}
@@ -287,15 +296,13 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                     {/* Video Section - Fixed Height for Visibility */}
                     <div className="w-full shrink-0 aspect-video bg-black relative shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden rounded-sm group">
                         {(() => {
-                            const sources = video?.sources || [];
-                            const activeSources = sources.filter((s: any) => s.url);
-
                             if (activeSources.length > 0) {
-                                // Simple cycling logic could be implemented with state, 
-                                // but for now let's just show the first one or implement a basic hook
-                                // Actually, I should probably add a state for current video index in the parent component
                                 return (
-                                    <VideoPlayer sources={activeSources} />
+                                    <VideoPlayer
+                                        sources={activeSources}
+                                        currentIndex={videoIndex % activeSources.length}
+                                        onEnded={handleVideoEnded}
+                                    />
                                 );
                             }
 
@@ -399,8 +406,7 @@ function Clock() {
     );
 }
 
-function VideoPlayer({ sources }: { sources: any[] }) {
-    const [currentIndex, setCurrentIndex] = useState(0);
+function VideoPlayer({ sources, currentIndex, onEnded }: { sources: any[], currentIndex: number, onEnded: () => void }) {
     const currentUrl = sources[currentIndex]?.url;
 
     console.log(`[🔍 VideoPlayer] sources:`, sources);
@@ -416,10 +422,6 @@ function VideoPlayer({ sources }: { sources: any[] }) {
             </div>
         );
     }
-
-    const handleEnded = () => {
-        setCurrentIndex((prev) => (prev + 1) % sources.length);
-    };
 
     // Robust check for YouTube URLs (including normalized embed links)
     const isYouTube = currentUrl.includes("youtube.com") || currentUrl.includes("youtu.be");
