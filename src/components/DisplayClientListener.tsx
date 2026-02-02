@@ -4,9 +4,21 @@ import { useEffect, useState } from "react";
 import { checkPendingCommand } from "@/app/display/actions";
 import { useRouter } from "next/navigation";
 
+import { useSession } from "next-auth/react";
+
 export function DisplayClientListener({ displayId }: { displayId: string }) {
     const router = useRouter();
+    const { data: session } = useSession();
     const [lastCheck, setLastCheck] = useState(Date.now());
+
+    // Auto-logout for passive display
+    useEffect(() => {
+        const sessionError = (session as any)?.error;
+        if (sessionError === "SessionExpired") {
+            console.log("[Display] Session expired, redirecting to login...");
+            window.location.href = "/login";
+        }
+    }, [session]);
 
     useEffect(() => {
         if (!displayId) return;
