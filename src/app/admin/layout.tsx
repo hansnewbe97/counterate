@@ -26,7 +26,7 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="flex h-screen bg-black font-sans text-gray-100 overflow-hidden">
+        <div className="flex h-[100dvh] bg-black font-sans text-gray-100 overflow-hidden">
             <Sidebar role={session?.user?.role} />
             <div className="flex-1 flex flex-col min-w-0 glass-effect relative bg-[#050505]">
                 {/* Decorative background elements */}
