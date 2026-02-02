@@ -57,8 +57,6 @@ export async function getPairedDisplay() {
             adminId: user.id,
             showClock: true,
             marqueeText: "Welcome to Jatim Prioritas",
-            RunningTextSpeed: 50,
-            layoutId: "default"
         },
         update: {}
     });
