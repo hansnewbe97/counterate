@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import DisplayBoard from "./display-board";
 import { DisplayClientListener } from "@/components/DisplayClientListener";
 
@@ -11,13 +10,22 @@ export default async function DisplayPage() {
     let session = null;
     try {
         session = await auth();
-        if (!session) {
-            // Automatically redirect to login if session is invalid
-            // This prevents the "Display Data Loading Failed" error screen for unauthenticated users
-            redirect("/login");
-        }
     } catch (e) {
         console.error("Auth check failed:", e);
+    }
+
+    if (!session || !session.user) {
+        console.log("[DisplayPage] No session found, performing client-side redirect to /login");
+        return (
+            <div className="flex h-screen w-screen items-center justify-center bg-black text-[#D4AF37]">
+                <meta httpEquiv="refresh" content="0;url=/login" />
+                <script dangerouslySetInnerHTML={{ __html: `window.location.href = "/login"` }} />
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-8 h-8 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                    <p>Redirecting to login...</p>
+                </div>
+            </div>
+        );
     }
 
     let initialData: any = null;
