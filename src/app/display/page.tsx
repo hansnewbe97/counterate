@@ -2,13 +2,12 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import DisplayBoard from "./display-board";
 import { DisplayClientListener } from "@/components/DisplayClientListener";
-import { unstable_noStore as noStore } from "next/cache";
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
 export const runtime = 'nodejs';
 
 export default async function DisplayPage() {
-    noStore();
     let session = null;
     try {
         session = await auth();
