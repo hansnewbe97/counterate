@@ -169,16 +169,16 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                                 <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
                                     {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
                                 </span>
-                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-2xl inline-block drop-shadow-md px-4 whitespace-nowrap">
                                     {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
                                 </span>
-                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-2xl inline-block drop-shadow-md px-4 whitespace-nowrap">
                                     {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
                                 </span>
-                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-2xl inline-block drop-shadow-md px-4 whitespace-nowrap">
                                     {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
                                 </span>
-                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-lg inline-block drop-shadow-md px-4 whitespace-nowrap">
+                                <span className="text-[#D4AF37] font-medium tracking-widest uppercase text-2xl inline-block drop-shadow-md px-4 whitespace-nowrap">
                                     {(config?.marqueeText || "Welcome to Jatim Prioritas - Exchange Rate Information Board") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
                                 </span>
                             </div>
@@ -500,7 +500,7 @@ function YouTubeEmbed({ url, onEnded }: { url: string, onEnded: () => void }) {
                 videoId: videoId,
                 playerVars: {
                     autoplay: 1,
-                    mute: 1,
+                    mute: 0,
                     controls: 0,
                     modestbranding: 1,
                     rel: 0,
@@ -570,7 +570,7 @@ function NativeVideo({ url, onEnded }: { url: string, onEnded: () => void }) {
             src={url}
             className="w-full h-full object-cover"
             autoPlay
-            muted
+
             playsInline
             onEnded={onEnded}
             onError={(e) => console.error("Video load error", e)}
