@@ -70,7 +70,7 @@ export function DepositManager({ initialDeposit }: { initialDeposit: any[] }) {
                         <div key={item.id} className="glass-card p-6 border border-[#222] bg-gradient-to-br from-black to-[#0a0a0a] group relative">
                             <button
                                 onClick={() => handleDelete(item.id)}
-                                className="absolute top-4 right-4 p-2 text-slate-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                className="absolute top-4 right-4 p-2 text-slate-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                             >
                                 <Trash2 size={16} />
                             </button>
