@@ -192,9 +192,8 @@ export default function DisplayBoard({ initialData }: { initialData: Data }) {
                         <img
                             src={config.leftLogoUrl}
                             alt="Logo"
-                            // mix-blend-screen: Removes black box
-                            // grayscale brightness-200: Forces non-white colors to look White Solid
-                            className="h-20 w-auto object-contain mix-blend-screen grayscale brightness-200"
+
+                            className="h-20 w-auto object-contain"
                         />
                     ) : (
                         <div className="h-20 w-20 bg-[#D4AF37] text-black rounded flex items-center justify-center">
