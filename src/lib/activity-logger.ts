@@ -47,6 +47,24 @@ export async function logActivity(
                 location
             }
         });
+
+        // Auto-cleanup: Keep database lean for free tier
+        // Delete logs older than 3 days
+        try {
+            const threeDaysAgo = new Date();
+            threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+            await prisma.activityLog.deleteMany({
+                where: {
+                    createdAt: {
+                        lt: threeDaysAgo
+                    }
+                }
+            });
+        } catch (cleanupError) {
+            console.error("Auto-cleanup failed:", cleanupError);
+        }
+
     } catch (error) {
         console.error("Failed to log activity:", error);
         // Don't crash the app if logging fails

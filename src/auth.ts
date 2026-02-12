@@ -52,10 +52,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         console.log("Login successful for:", username);
 
                         // Increment session version to invalidate other sessions
-                        const updatedUser = await prisma.user.update({
-                            where: { id: user.id },
-                            data: { sessionVersion: { increment: 1 } }
-                        });
+                        // Wrap in try-catch to satisfy "read-only" or "storage full" database states
+                        let updatedUser;
+                        try {
+                            updatedUser = await prisma.user.update({
+                                where: { id: user.id },
+                                data: { sessionVersion: { increment: 1 } }
+                            });
+                        } catch (error) {
+                            console.error("Failed to update session version (DB might be full or read-only):", error);
+                            // Fallback to original user object if update fails
+                            updatedUser = user;
+                        }
 
                         // Handle Geolocation if provided
                         const creds = credentials as any;
@@ -82,6 +90,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             }
                         }
 
+                        // logActivity already has internal try-catch
                         await logActivity(user.id, "LOGIN", "User logged in via credentials", deviceLocation);
 
                         return {
